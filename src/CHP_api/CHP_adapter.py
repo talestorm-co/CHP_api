@@ -66,7 +66,7 @@ class CHP_api:
     def cancel_ticks(self):
         raise NotImplementedError()
 
-    @login_required
+    @_login_required
     def get_bars(self, company: str, interval: int, since: str, count: int):
         """
 
@@ -100,7 +100,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    @login_required
+    @_login_required
     def get_trades(self, symbol: str, count: int, time_from: str):
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
                      "count": count, "from": time_from}
@@ -157,7 +157,7 @@ class CHP_api:
     def set_my_trade(self):
         raise NotImplementedError()
     
-    @login_required
+    @_login_required
     def set_portfolio(self, portfolio: str):
         my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
         resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio',
@@ -165,8 +165,6 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-        @login_required
-    
     def update_order(self):
         raise NotImplementedError()
     
@@ -198,4 +196,3 @@ class CHP_api:
     setPortfolio = set_portfolio
     updateOrder = update_order
     updatePosition = update_position
-    
