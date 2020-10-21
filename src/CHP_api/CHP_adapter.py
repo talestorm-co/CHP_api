@@ -4,27 +4,29 @@ from typing import Optional, Union, Dict
 
 
 class CHP_api:
+    login: Optional[str] = None
+    password: Optional[str] = None
+    key: Optional[str] = None
+
     def __init__(self, api_url: str, port: Optional[Union[str, int]] = None):
         """
 
         :param api_url: URL или IP сервера
         :param port: Порт сервера (опционально)
         """
-        self.login: Optional[str] = None
-        self.password: Optional[str] = None
-        self.key: Optional[str] = None
+
         self.url = api_url
         if port:
             self.url += f":{port}"
 
-    def login(self, login: str, password: str, key: str):
+    def login(self, user_login: str, password: str, key: str):
         """
-        
-        :param login: Логин пользователя
+
+        :param user_login: Логин пользователя
         :param password: Пароль пользователя
         :param key: Ключ пользователя
         """
-        self.login = login
+        self.login = user_login
         self.password = password
         self.key = key
 
