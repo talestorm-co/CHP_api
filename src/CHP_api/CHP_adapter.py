@@ -2,7 +2,7 @@ import json
 import requests
 import functools
 from typing import Optional, Union, Dict
-
+from CHPExceptions import LoginException
 
 class CHP_api:
     user_login: Optional[str] = None
@@ -31,6 +31,19 @@ class CHP_api:
         self.password = password
         self.key = key
 
+    def login_required(func):
+        """
+            decorator who check what login, password and key are initialized
+        """
+        @functools.wraps(func)
+        def _wrapper(self, *args, **kwargs):
+            if not self.user_login or \
+                not self.password or \
+                not self.key:
+                raise LoginException('Нет логина, пароля или ключа. выполните метод login.')
+            return func(self, *args, **kwargs)
+        return _wrapper
+        
     def cancel_bid_ask(self):
         raise NotImplementedError()
 
@@ -130,17 +143,10 @@ class CHP_api:
 
     def place_order(self):
         raise NotImplementedError()
-
-
-    def login_required(func):
-        @functools.wraps(func)
-        def _wrapper(self, *args, **kwargs):
-            if not self.user_login or \
-                not self.password or \
-                not self.key:
-                raise Exception('Нет логина, пароля или ключа. выполните метод login.')
-            return func(self, *args, **kwargs)
-        return _wrapper
+    
+    @login_required
+    def _test(self):
+        return True
 
     # camelCase aliases
     cancelBidAsk = cancel_bid_ask
