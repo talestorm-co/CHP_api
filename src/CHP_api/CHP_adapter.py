@@ -1,8 +1,9 @@
 import json
 import requests
 import functools
-from typing import Optional, Union, Dict
-from CHPExceptions import LoginException
+from typing import Optional, Union, Dict, Callable, List
+from .CHPExceptions import LoginException
+
 
 class CHP_api:
     user_login: Optional[str] = None
@@ -31,19 +32,22 @@ class CHP_api:
         self.password = password
         self.key = key
 
-    def login_required(func):
+    @staticmethod
+    def _login_required(func: Callable):
         """
             decorator who check what login, password and key are initialized
         """
+
         @functools.wraps(func)
         def _wrapper(self, *args, **kwargs):
             if not self.user_login or \
-                not self.password or \
-                not self.key:
+                    not self.password or \
+                    not self.key:
                 raise LoginException('Нет логина, пароля или ключа. выполните метод login.')
             return func(self, *args, **kwargs)
+
         return _wrapper
-        
+
     def cancel_bid_ask(self):
         raise NotImplementedError()
 
@@ -65,7 +69,7 @@ class CHP_api:
     def disconnected(self):
         raise NotImplementedError()
 
-    @login_required
+    @_login_required
     def get_bars(self, company: str, interval: int, since: str, count: int):
         """
 
@@ -94,40 +98,44 @@ class CHP_api:
         """
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": company,
                      "interval": interval, "since": since, "count": count}
-        resp = requests.post(f'http://{self.url}/api/instruments/getbars', json=json_data,
+        resp = requests.post(f'http://{self.url}/api/instruments/getbars',
+                             json=json_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
     def get_my_portfolio_data(self):
         raise NotImplementedError()
 
-    @login_required
+    @_login_required
     def get_trades(self, symbol: str, count: int, time_from: str):
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
                      "count": count, "from": time_from}
-        resp = requests.post(f'http://{self.url}/api/instruments/gettrade', json=json_data,
+        resp = requests.post(f'http://{self.url}/api/instruments/gettrade',
+                             json=json_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    @login_required
+    @_login_required
     def get_portfolio_list(self):
         """
         Заказать справочник доступных счетов.
         :return:
         """
         my_data = {"login": self.user_login, "password": self.password, "key": "12345"}
-        resp = requests.post(f'http://{self.url}/api/accountinformation/getprortfoliolist', json=my_data,
+        resp = requests.post(f'http://{self.url}/api/accountinformation/getprortfoliolist',
+                             json=my_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    @login_required
+    @_login_required
     def get_symbols(self):
         """
         Заказать справочник ЦБ.
         :return:
         """
         json_data = {"login": self.user_login, "password": self.password, "key": self.key}
-        resp = requests.post(f'http://{self.url}/api/instruments/getsymbols', json=json_data,
+        resp = requests.post(f'http://{self.url}/api/instruments/getsymbols',
+                             json=json_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
@@ -151,15 +159,34 @@ class CHP_api:
 
     def place_order(self):
         raise NotImplementedError()
-    
-    @login_required
+
+    @_login_required
     def set_portfolio(self, portfolio: str):
         my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
-        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio', json=my_data,
+        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio',
+                             json=my_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-        @login_required
+    def add_trade(self):
+        raise NotImplementedError()
+
+    def update_order(self):
+        raise NotImplementedError()
+
+    def update_position(self):
+        raise NotImplementedError()
+
+    def set_my_trade(self):
+        raise NotImplementedError()
+
+    def set_my_close_trade(self):
+        raise NotImplementedError()
+
+    def set_my_order(self):
+        raise NotImplementedError()
+
+    @_login_required
     def _test(self):
         return True
 
