@@ -62,3 +62,24 @@ class CHP_api():
 
     def place_order(self):
         pass
+
+
+
+    ## aliases
+    cancelBidAsk = cancel_bid_ask
+    cancelOrder = cancel_order
+    cancelPortfolio = cancel_portfolio
+    cancelQuotes = cancel_quotes
+    cancelTicks = cancel_ticks
+    getBars = get_bars
+    getMyPortfolioData = get_my_portfolio_data
+    getTrades = get_trades
+    getPortfolioList = get_portfolio_list
+    getSymbols = get_symbols
+    isConnected = is_connected
+    listenBidAsks = listen_bid_asks
+    listenPortfolio = listen_portfolio
+    listenQuotes = listen_quotes
+    listenTicks = listen_ticks
+    moveOrder = move_order
+    placeOrder = place_order
