@@ -1,3 +1,3 @@
 from .CHP_adapter import CHP_api
 
-__version__ = '0.0.2a'
+__version__ = "0.0.2b"
