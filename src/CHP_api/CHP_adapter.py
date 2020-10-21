@@ -4,7 +4,7 @@ from typing import Optional, Union, Dict
 
 
 class CHP_api:
-    login: Optional[str] = None
+    user_login: Optional[str] = None
     password: Optional[str] = None
     key: Optional[str] = None
 
