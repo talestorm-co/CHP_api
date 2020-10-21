@@ -1,22 +1,22 @@
 import json
 import requests
-
+from typing import Optional, Union
 
 class CHP_api:
-    def __init__(self, api_url, port=None):
+    def __init__(self, api_url: str, port: Optional[Union[str, int]] = None):
         """
 
         :param api_url: URL или IP сервера
         :param port: Порт сервера (опционально)
         """
-        self.login = None
-        self.password = None
-        self.key = None
+        self.login: Optional[str] = None
+        self.password: Optional[str] = None
+        self.key: Optional[str] = None
         self.url = api_url
         if port:
             self.url += f":{port}"
 
-    def connect(self, login, password, key):
+    def connect(self, login: str, password: str, key: str):
         """
 
         :param login: Логин пользователя
@@ -130,3 +130,4 @@ class CHP_api:
     listenTicks = listen_ticks
     moveOrder = move_order
     placeOrder = place_order
+
