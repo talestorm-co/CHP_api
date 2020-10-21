@@ -1,5 +1,6 @@
 import json
 import requests
+import functools
 from typing import Optional, Union, Dict
 
 
@@ -122,6 +123,17 @@ class CHP_api:
 
     def place_order(self):
         raise NotImplementedError()
+
+
+    def login_required(func):
+        @functools.wraps(func)
+        def _wrapper(self, *args, **kwargs):
+            if not self.user_login or \
+                not self.password or \
+                not self.key:
+                raise Exception('Нет логина, пароля или ключа. выполните метод login.')
+            return func(self, *args, **kwargs)
+        return _wrapper
 
     # camelCase aliases
     cancelBidAsk = cancel_bid_ask
