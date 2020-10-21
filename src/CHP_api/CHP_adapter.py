@@ -51,7 +51,7 @@ class CHP_api:
     def disconnected(self):
         raise NotImplementedError()
 
-    def get_bars(self, company: str, interval: int, since: str, count: int) -> Dict[str, str]:
+    def get_bars(self, company: str, interval: int, since: str, count: int):
         """
 
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
