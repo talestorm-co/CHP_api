@@ -76,7 +76,7 @@ class CHP_api:
             отрицательно – то «вперед»
         :return: dict
         """
-        json_data = {"login": self.login, "password": self.password, "key": self.key, "symbol": company,
+        json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": company,
                      "interval": interval, "since": since, "count": count}
         resp = requests.post(f'{self.url}/api/instruments/getbars', json=json_data,
                              headers={'Content-Type': 'application/json'})
