@@ -26,7 +26,7 @@ class CHP_api:
         :param password: Пароль пользователя
         :param key: Ключ пользователя
         """
-        self.login = user_login
+        self.user_login = user_login
         self.password = password
         self.key = key
 
