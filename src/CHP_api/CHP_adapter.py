@@ -1,10 +1,11 @@
-import requests
+import requests, json
 
 
 class CHP_api():
-    def __init__(self, login, password):
+    def __init__(self, login, password, key):
         self.login = login
         self.password = password
+        self.key = key
 
     def cancel_bid_ask(self):
         pass
@@ -27,8 +28,35 @@ class CHP_api():
     def disconnected(self):
         pass
 
-    def get_bars(self):
-        pass
+    def get_bars(self, company: str, interval: int, since: str, count: int) -> dict:
+        """
+        :param company: Код ЦБ из таблицы котировок TC Matrix
+        :param interval: Интервал времени.
+            1 - минута
+            2 - 5 минут
+            3 - 10 минут
+            4 - 15 минут
+            5 - 30 минут
+            6 - час
+            7 - 2 часа
+            8 - 4 часа
+            9 - день
+            10 - неделя
+            11 - месяц
+            12 - квартал
+            13 - год
+        :param since: Дата начала запрашиваемого интервала
+        :param count: Количество запрашиваемых интервалов. Если количество
+            запрашиваемых интервалов положительно, сбор идет
+            «назад» по времени в прошлое от указанной даты; если
+            отрицательно – то «вперед»
+        :return:
+        """
+        json_data = {"login": self.login, "password": self.password, "key": self.key, "symbol": company,
+                     "interval": interval, "since": since, "count": count}
+        resp = requests.post('http://localhost:5000/api/instruments/getbars', json=json_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def get_my_portfolio_data(self):
         pass
