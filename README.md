@@ -19,7 +19,6 @@ api.get_bars("GAZP", 3, "2020-10-15", 2)
 ```
 
 ## All Methods
-[CHP_api](#chp_api)  
 [Installation:](#installation)  
 [Example](#example)  
 [All Methods](#all-methods)  
