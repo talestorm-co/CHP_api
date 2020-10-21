@@ -2,8 +2,27 @@ import json
 import requests
 
 
-class CHP_api():
-    def __init__(self, login, password, key):
+class CHP_api:
+    def __init__(self, api_url, port=None):
+        """
+
+        :param api_url: URL или IP сервера
+        :param port: Порт сервера (опционально)
+        """
+        self.login = None
+        self.password = None
+        self.key = None
+        self.url = api_url
+        if port:
+            self.url += f":{port}"
+
+    def connect(self, login, password, key):
+        """
+
+        :param login: Логин пользователя
+        :param password: Пароль пользователя
+        :param key: Ключ пользователя
+        """
         self.login = login
         self.password = password
         self.key = key
@@ -31,6 +50,7 @@ class CHP_api():
 
     def get_bars(self, company: str, interval: int, since: str, count: int) -> dict:
         """
+
         :param company: Код ЦБ из таблицы котировок TC Matrix
         :param interval: Интервал времени.
             1 - минута
@@ -51,11 +71,11 @@ class CHP_api():
             запрашиваемых интервалов положительно, сбор идет
             «назад» по времени в прошлое от указанной даты; если
             отрицательно – то «вперед»
-        :return:
+        :return: dict
         """
         json_data = {"login": self.login, "password": self.password, "key": self.key, "symbol": company,
                      "interval": interval, "since": since, "count": count}
-        resp = requests.post('http://localhost:5000/api/instruments/getbars', json=json_data,
+        resp = requests.post(f'{self.url}/api/instruments/getbars', json=json_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
