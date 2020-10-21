@@ -87,8 +87,12 @@ class CHP_api:
     def get_my_portfolio_data(self):
         raise NotImplementedError()
 
-    def get_trades(self):
-        raise NotImplementedError()
+    def get_trades(self, symbol: str, count: int, time_from: str):
+        json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
+                     "count": count, "from": time_from}
+        resp = requests.post(f'http://{self.url}/api/instruments/gettrade', json=json_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def get_portfolio_list(self):
         """
