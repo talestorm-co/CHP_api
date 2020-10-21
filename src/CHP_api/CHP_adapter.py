@@ -90,7 +90,14 @@ class CHP_api:
         raise NotImplementedError()
 
     def get_portfolio_list(self):
-        raise NotImplementedError()
+        """
+        Заказать справочник доступных счетов.
+        :return:
+        """
+        my_data = {"login": "CV4T3Y17", "password": "VAQ71L", "key": "12345"}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/getprortfoliolist', json=my_data,
+                      headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def get_symbols(self):
         """
