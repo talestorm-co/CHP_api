@@ -65,6 +65,7 @@ class CHP_api:
     def disconnected(self):
         raise NotImplementedError()
 
+    @login_required
     def get_bars(self, company: str, interval: int, since: str, count: int):
         """
 
@@ -100,6 +101,7 @@ class CHP_api:
     def get_my_portfolio_data(self):
         raise NotImplementedError()
 
+    @login_required
     def get_trades(self, symbol: str, count: int, time_from: str):
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
                      "count": count, "from": time_from}
@@ -107,6 +109,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @login_required
     def get_portfolio_list(self):
         """
         Заказать справочник доступных счетов.
@@ -117,6 +120,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @login_required
     def get_symbols(self):
         """
         Заказать справочник ЦБ.
@@ -149,14 +153,16 @@ class CHP_api:
         raise NotImplementedError()
     
     @login_required
-    def _test(self):
-        return True
-
     def set_portfolio(self, portfolio: str):
         my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
         resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio', json=my_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
+
+        @login_required
+    def _test(self):
+        return True
+
     # camelCase aliases
     cancelBidAsk = cancel_bid_ask
     cancelOrder = cancel_order
