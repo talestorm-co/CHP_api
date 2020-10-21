@@ -1,6 +1,7 @@
 import json
 import requests
-from typing import Optional, Union
+from typing import Optional, Union, Dict
+
 
 class CHP_api:
     def __init__(self, api_url: str, port: Optional[Union[str, int]] = None):
@@ -16,9 +17,9 @@ class CHP_api:
         if port:
             self.url += f":{port}"
 
-    def connect(self, login: str, password: str, key: str):
+    def login(self, login: str, password: str, key: str):
         """
-
+        
         :param login: Логин пользователя
         :param password: Пароль пользователя
         :param key: Ключ пользователя
@@ -48,10 +49,10 @@ class CHP_api:
     def disconnected(self):
         raise NotImplementedError()
 
-    def get_bars(self, company: str, interval: int, since: str, count: int) -> dict:
+    def get_bars(self, company: str, interval: int, since: str, count: int) -> Dict[str, str]:
         """
 
-        :param company: Код ЦБ из таблицы котировок TC Matrix
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :param interval: Интервал времени.
             1 - минута
             2 - 5 минут
@@ -130,4 +131,3 @@ class CHP_api:
     listenTicks = listen_ticks
     moveOrder = move_order
     placeOrder = place_order
-
