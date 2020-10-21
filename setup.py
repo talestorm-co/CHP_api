@@ -19,5 +19,5 @@ setup(name='CHP_api',
       package_dir={'': 'src'},
       packages=find_packages(where='src'),
       python_requires='>=3.5, <4',
-      install_requires=['requests', 'json'],
+      install_requires=['requests==2.24.0'],
      )
