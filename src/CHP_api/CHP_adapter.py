@@ -80,7 +80,7 @@ class CHP_api:
         """
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": company,
                      "interval": interval, "since": since, "count": count}
-        resp = requests.post(f'{self.url}/api/instruments/getbars', json=json_data,
+        resp = requests.post(f'http://{self.url}/api/instruments/getbars', json=json_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
@@ -91,7 +91,14 @@ class CHP_api:
         raise NotImplementedError()
 
     def get_portfolio_list(self):
-        raise NotImplementedError()
+        """
+        Заказать справочник доступных счетов.
+        :return:
+        """
+        my_data = {"login": "CV4T3Y17", "password": "VAQ71L", "key": "12345"}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/getprortfoliolist', json=my_data,
+                      headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def get_symbols(self):
         """
@@ -99,7 +106,7 @@ class CHP_api:
         :return:
         """
         json_data = {"login": self.user_login, "password": self.password, "key": self.key}
-        resp = requests.post(f'{self.url}/api/instruments/getsymbols', json=json_data,
+        resp = requests.post(f'http://{self.url}/api/instruments/getsymbols', json=json_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
