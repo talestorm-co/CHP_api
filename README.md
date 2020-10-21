@@ -1,5 +1,10 @@
 # CHP_api
+
 Python module for interacting with ITI Capital.
+
+## Installation:
+`pip install git+https://github.com/talestorm-com/CHP_api.git`
+
 
 ## Usage
 Required parameters:
