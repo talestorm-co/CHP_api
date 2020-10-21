@@ -1,4 +1,5 @@
-import requests, json
+import json
+import requests
 
 
 class CHP_api():
@@ -8,25 +9,25 @@ class CHP_api():
         self.key = key
 
     def cancel_bid_ask(self):
-        pass
+        raise NotImplementedError()
 
     def cancel_order(self):
-        pass
+        raise NotImplementedError()
 
     def cancel_portfolio(self):
-        pass
+        raise NotImplementedError()
 
     def cancel_quotes(self):
-        pass
+        raise NotImplementedError()
 
     def cancel_ticks(self):
-        pass
+        raise NotImplementedError()
 
     def connected(self):
-        pass
+        raise NotImplementedError()
 
     def disconnected(self):
-        pass
+        raise NotImplementedError()
 
     def get_bars(self, company: str, interval: int, since: str, count: int) -> dict:
         """
@@ -59,41 +60,39 @@ class CHP_api():
         return json.loads(resp.text)
 
     def get_my_portfolio_data(self):
-        pass
+        raise NotImplementedError()
 
     def get_trades(self):
-        pass
+        raise NotImplementedError()
 
     def get_portfolio_list(self):
-        pass
+        raise NotImplementedError()
 
     def get_symbols(self):
-        pass
+        raise NotImplementedError()
 
     def is_connected(self):
-        pass
+        raise NotImplementedError()
 
     def listen_bid_asks(self):
-        pass
+        raise NotImplementedError()
 
     def listen_portfolio(self):
-        pass
+        raise NotImplementedError()
 
     def listen_quotes(self):
-        pass
+        raise NotImplementedError()
 
     def listen_ticks(self):
-        pass
+        raise NotImplementedError()
 
     def move_order(self):
-        pass
+        raise NotImplementedError()
 
     def place_order(self):
-        pass
+        raise NotImplementedError()
 
-
-
-    ## aliases
+    # camelCase aliases
     cancelBidAsk = cancel_bid_ask
     cancelOrder = cancel_order
     cancelPortfolio = cancel_portfolio
