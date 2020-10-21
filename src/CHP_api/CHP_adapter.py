@@ -181,3 +181,4 @@ class CHP_api:
     listenTicks = listen_ticks
     moveOrder = move_order
     placeOrder = place_order
+    setPortfolio = set_portfolio
