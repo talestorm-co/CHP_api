@@ -47,7 +47,10 @@ class CHP_api:
             return func(self, *args, **kwargs)
 
         return _wrapper
-
+        
+    def add_trade(self):
+        raise NotImplementedError()
+    
     def cancel_bid_ask(self):
         raise NotImplementedError()
 
@@ -63,13 +66,7 @@ class CHP_api:
     def cancel_ticks(self):
         raise NotImplementedError()
 
-    def connected(self):
-        raise NotImplementedError()
-
-    def disconnected(self):
-        raise NotImplementedError()
-
-    @_login_required
+    @login_required
     def get_bars(self, company: str, interval: int, since: str, count: int):
         """
 
@@ -103,10 +100,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    def get_my_portfolio_data(self):
-        raise NotImplementedError()
-
-    @_login_required
+    @login_required
     def get_trades(self, symbol: str, count: int, time_from: str):
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
                      "count": count, "from": time_from}
@@ -139,13 +133,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    def is_connected(self):
-        raise NotImplementedError()
-
     def listen_bid_asks(self):
-        raise NotImplementedError()
-
-    def listen_portfolio(self):
         raise NotImplementedError()
 
     def listen_quotes(self):
@@ -159,8 +147,17 @@ class CHP_api:
 
     def place_order(self):
         raise NotImplementedError()
+    
+    def set_my_colse_pos(self):
+        raise NotImplementedError()
 
-    @_login_required
+    def set_my_order(self):
+        raise NotImplementedError()
+
+    def set_my_trade(self):
+        raise NotImplementedError()
+    
+    @login_required
     def set_portfolio(self, portfolio: str):
         my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
         resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio',
@@ -168,44 +165,37 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    def add_trade(self):
-        raise NotImplementedError()
-
+        @login_required
+    
     def update_order(self):
         raise NotImplementedError()
-
+    
     def update_position(self):
         raise NotImplementedError()
 
-    def set_my_trade(self):
-        raise NotImplementedError()
-
-    def set_my_close_trade(self):
-        raise NotImplementedError()
-
-    def set_my_order(self):
-        raise NotImplementedError()
-
-    @_login_required
     def _test(self):
         return True
 
     # camelCase aliases
+    addTrade = add_trade
     cancelBidAsk = cancel_bid_ask
     cancelOrder = cancel_order
     cancelPortfolio = cancel_portfolio
     cancelQuotes = cancel_quotes
     cancelTicks = cancel_ticks
     getBars = get_bars
-    getMyPortfolioData = get_my_portfolio_data
     getTrades = get_trades
     getPortfolioList = get_portfolio_list
     getSymbols = get_symbols
-    isConnected = is_connected
     listenBidAsks = listen_bid_asks
-    listenPortfolio = listen_portfolio
     listenQuotes = listen_quotes
     listenTicks = listen_ticks
     moveOrder = move_order
     placeOrder = place_order
+    setMyColsePos = set_my_colse_pos
+    setMyOrder = set_my_order
+    setMyTrade = set_my_trade
     setPortfolio = set_portfolio
+    updateOrder = update_order
+    updatePosition = update_position
+    
