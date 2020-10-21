@@ -74,7 +74,8 @@ class CHP_api:
             запрашиваемых интервалов положительно, сбор идет
             «назад» по времени в прошлое от указанной даты; если
             отрицательно – то «вперед»
-        :return: dict
+        :return:
+        dict[str, str]
         """
         json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": company,
                      "interval": interval, "since": since, "count": count}
@@ -92,7 +93,14 @@ class CHP_api:
         raise NotImplementedError()
 
     def get_symbols(self):
-        raise NotImplementedError()
+        """
+        Заказать справочник ЦБ.
+        :return:
+        """
+        json_data = {"login": self.user_login, "password": self.password, "key": self.key}
+        resp = requests.post(f'{self.url}/api/instruments/getsymbols', json=json_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def is_connected(self):
         raise NotImplementedError()
