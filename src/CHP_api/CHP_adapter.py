@@ -48,24 +48,63 @@ class CHP_api:
             return func(self, *args, **kwargs)
 
         return _wrapper
-        
+
     def add_trade(self):
         raise NotImplementedError()
-    
-    def cancel_bid_ask(self):
-        raise NotImplementedError()
 
-    def cancel_order(self):
-        raise NotImplementedError()
+    def cancel_bid_ask(self, company: str):
+        """
+        Отменяет получение очереди заявок по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        resp = requests.post(f'http://{self.url}/api/instruments/cancelbidasks',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
+
+    def cancel_order(self, company: str, portfolio: str, order_id: str):
+        """
+        Отменяет приказ, выставленный на рынок методом PlaceOrder.
+        :param company: Номер торгового счёта на торговой площадке.
+        :param portfolio: Номер торгового счёта на торговой площадке.
+        :param order_id: Id приказа на сервере котировок
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company,
+                   "portfolio": portfolio, "orderid": order_id}
+        resp = requests.post(f'http://{self.url}/api/order/cancel',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def cancel_portfolio(self):
         raise NotImplementedError()
 
-    def cancel_quotes(self):
-        raise NotImplementedError()
+    def cancel_quotes(self, company: str):
+        """
+        Отменяет получение котировок по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        resp = requests.post(f'http://{self.url}/api/instruments/cancelquotes',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
-    def cancel_ticks(self):
-        raise NotImplementedError()
+    def cancel_ticks(self, company: str):
+        """
+        Отменяет получение всех сделок на рынке по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        resp = requests.post(f'http://{self.url}/api/instruments/cancelticks',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     @_login_required
     def get_bars(self, company: str, interval: int, since: str, count: int):
@@ -134,22 +173,109 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    def listen_bid_asks(self):
-        raise NotImplementedError()
+    def listen_bid_asks(self, company: str):
+        """
+        Заказать очередь заявок по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        resp = requests.post(f'http://{self.url}/api/instruments/listenbidasks',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
-    def listen_quotes(self):
-        raise NotImplementedError()
+    def listen_quotes(self, company: str):
+        """
+        Заказать котировки по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        resp = requests.post(f'http://{self.url}/api/instruments/listenquotes',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
 
-    def listen_ticks(self):
-        raise NotImplementedError()
+    def listen_ticks(self, company: str):
+        """
+        Заказать все сделки на рынке по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        resp = requests.post(f'http://{self.url}/api/instruments/listenticks',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
 
-    def move_order(self):
-        raise NotImplementedError()
+    def move_order(self, company: str, portfolio: str, order_id: str, targetprice: float):
+        """
+        Заказать все сделки на рынке по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
+        :param portfolio: Номер торгового счёта на торговой площадке.
+        :param order_id: Номер заявки в ТС Matrix
+        :param targetprice: Новая цена приказа
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345",
+                   "portfolio": portfolio, "symbol": company, "orderid": order_id,
+                   "targetprice": targetprice}
+        resp = requests.post(f'http://{self.url}/api/order/move',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
 
-    def place_order(self):
-        raise NotImplementedError()
+    def place_order(self, portfolio: str, company: str, action: int, _type: int, validity: int, price: float,
+                    amount: float, stop: float, cookie: int):
+        """
+
+        :param portfolio: Номер торгового счёта на торговой площадке.
+
+        :param company: Код ЦБ из таблицы котировок TC Matrix
+
+        :param action: Вид торговой операции. Принимает следующие значения:
+                    1 - Купить
+                    2 - Продать
+                    3 - Открыть «короткую позицию»
+                    4 – Закрыть «короткую» позицию
+        :param _type: Тип приказа. Принимает следующие значения:
+                    1 - Приказ по рынку
+                    2 - Лимитированный приказ
+                    3 - Стоп приказ
+                    4 – приказ Стоп-Лимит
+
+        :param validity: Срок действия приказа. Принимает следующие значения:
+                    1 - День
+                    2 – GTC (до отмены, макс. 30 дней)
+
+        :param price: Цена Лимит - для заявок типа Лимит и Стоп-Лимит
+                    0 - для приказа: По рынку или Стоп
+
+        :param amount: Объем, ЦБ в приказе
+
+        :param stop: Цена СТОП для приказа типа Стоп и Стоп-Лимит
+                    0 - для приказа: По рынку или Лимит
+
+        :param cookie: Ваш уникальный номер приказа, используется для
+                    определения Id приказа через события OrderSucceeded/
+                    OrderFailed и UpdateOrders
+        :return:
+        """
+        my_data = {"login": self.user_login,
+                   "password": self.password,
+                   "key": "12345",
+                   "portfolio": portfolio,
+                   "symbol": company,
+                   "action": action,
+                   "Type": _type,
+                   "validity": validity,
+                   "price": price,
+                   "amount": amount,
+                   "stop": stop,
+                   "cookie": cookie}
+        resp = requests.post(f'http://{self.url}/api/order/move',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
     
-    def set_my_colse_pos(self):
+    def set_my_close_pos(self):
         raise NotImplementedError()
 
     def set_my_order(self):
@@ -191,7 +317,7 @@ class CHP_api:
     listenTicks = listen_ticks
     moveOrder = move_order
     placeOrder = place_order
-    setMyColsePos = set_my_colse_pos
+    setMyClosePos = set_my_close_pos
     setMyOrder = set_my_order
     setMyTrade = set_my_trade
     setPortfolio = set_portfolio
