@@ -19,9 +19,6 @@ api.get_bars("GAZP", 3, "2020-10-15", 2)
 ```
 
 ## All Methods
-[Installation:](#installation)  
-[Example](#example)  
-[All Methods](#all-methods)  
 [add_trade](#add_trade)  
 [cancel_bid_ask](#cancel_bid_ask)  
 [cancel_order](#cancel_order)  
