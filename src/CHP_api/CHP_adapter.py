@@ -33,7 +33,7 @@ class CHP_api:
         self.password = password
         self.key = key
 
-    @staticmethod
+
     def _login_required(func: Callable):
         """
             decorator who check what login, password and key are initialized
