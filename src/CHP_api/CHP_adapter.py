@@ -141,8 +141,15 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_trades(self, symbol: str, count: int, time_from: str):
-        json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
+    def get_trades(self, company: str, count: int, time_from: str):
+        """
+        Заказать тиковую историю сделок по инструменту.
+        :param company: Код ЦБ из таблицы котировок TC Matrix
+        :param count: Количество запрашиваемых тиков
+        :param time_from: Время
+        :return:
+        """
+        json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": company,
                      "count": count, "from": time_from}
         resp = requests.post(f'http://{self.url}/api/instruments/gettrade',
                              json=json_data,
@@ -226,7 +233,7 @@ class CHP_api:
     def place_order(self, portfolio: str, company: str, action: int, _type: int, validity: int, price: float,
                     amount: float, stop: float, cookie: int):
         """
-
+        Выставить приказ. 
         :param portfolio: Номер торгового счёта на торговой площадке.
 
         :param company: Код ЦБ из таблицы котировок TC Matrix
@@ -286,6 +293,11 @@ class CHP_api:
     
     @_login_required
     def set_portfolio(self, portfolio: str):
+        """
+        Изменился торговый счёт.
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
         my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
         resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio',
                              json=my_data,
