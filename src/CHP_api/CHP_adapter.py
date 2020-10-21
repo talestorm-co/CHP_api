@@ -100,17 +100,21 @@ class CHP_api:
     def get_my_portfolio_data(self):
         raise NotImplementedError()
 
-    def get_trades(self):
-        raise NotImplementedError()
+    def get_trades(self, symbol: str, count: int, time_from: str):
+        json_data = {"login": self.user_login, "password": self.password, "key": self.key, "symbol": symbol,
+                     "count": count, "from": time_from}
+        resp = requests.post(f'http://{self.url}/api/instruments/gettrade', json=json_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def get_portfolio_list(self):
         """
         Заказать справочник доступных счетов.
         :return:
         """
-        my_data = {"login": "CV4T3Y17", "password": "VAQ71L", "key": "12345"}
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345"}
         resp = requests.post(f'http://{self.url}/api/accountinformation/getprortfoliolist', json=my_data,
-                      headers={'Content-Type': 'application/json'})
+                             headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
     def get_symbols(self):
@@ -148,6 +152,11 @@ class CHP_api:
     def _test(self):
         return True
 
+    def set_portfolio(self, portfolio: str):
+        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio', json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
     # camelCase aliases
     cancelBidAsk = cancel_bid_ask
     cancelOrder = cancel_order
