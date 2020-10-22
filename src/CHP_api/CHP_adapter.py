@@ -109,6 +109,7 @@ class CHP_api:
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
 
+    @_login_required
     def cancel_quotes(self, company: str):
         """
         Отменяет получение котировок по инструменту.
@@ -121,6 +122,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @_login_required
     def cancel_ticks(self, company: str):
         """
         Отменяет получение всех сделок на рынке по инструменту.
@@ -207,6 +209,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @_login_required
     def listen_bid_asks(self, company: str):
         """
         Заказать очередь заявок по инструменту.
@@ -219,6 +222,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @_login_required
     def listen_quotes(self, company: str):
         """
         Заказать котировки по инструменту.
@@ -230,6 +234,7 @@ class CHP_api:
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
 
+    @_login_required
     def listen_ticks(self, company: str):
         """
         Заказать все сделки на рынке по инструменту.
@@ -241,6 +246,7 @@ class CHP_api:
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
 
+    @_login_required
     def move_order(self, company: str, portfolio: str, order_id: str, targetprice: float):
         """
         Заказать все сделки на рынке по инструменту.
@@ -257,6 +263,7 @@ class CHP_api:
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
 
+    @_login_required
     def place_order(self, portfolio: str, company: str, action: int, _type: int, validity: int, price: float,
                     amount: float, stop: float, cookie: int):
         """
@@ -308,7 +315,8 @@ class CHP_api:
         resp = requests.post(f'http://{self.url}/api/order/move',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
-    
+   
+    @_login_required 
     def set_my_close_pos(self, mode: int, portfolio: str):
         """
         Все закрытые позиции за текущую сессию
@@ -324,6 +332,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @_login_required
     def set_my_order(self, mode: int, portfolio: str):
         """
         Все приказы за текущую сессию
@@ -338,6 +347,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @_login_required
     def set_my_trade(self, mode: int, portfolio: str):
         """
         Все сделки за текущую сессию
@@ -365,6 +375,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
+    @_login_required
     def update_order(self, portfolio: str):
         """
         Состояние приказа
@@ -377,6 +388,7 @@ class CHP_api:
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
     
+    @_login_required
     def update_position(self, portfolio: str):
         """
         Изменилась позиция 
