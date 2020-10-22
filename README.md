@@ -43,7 +43,11 @@ api.get_bars("GAZP", 3, "2020-10-15", 2)
 
 
 ### add_trade
-Lorem huipsum
+Новая сделка 
+- portfolio - Номер торгового счёта на торговой площадке
+```python
+api.add_trade(self, portfolio: str):
+```
 
 ### cancel_bid_ask
 Отменяет получение очереди заявок по инструменту.
@@ -59,7 +63,12 @@ api.cancel_bid_ask(company)
 ```python
 api.cancel_order(company, portfolio, order_id)
 ```
-### cancel_portfolio      
+### cancel_portfolio   
+Отмена получения информации по счету
+- portfolio: Номер торгового счёта на торговой площадке   
+```python
+api.cancel_portfolio(self, portfolio: str):
+```
 
 ### cancel_quotes
 Отменяет получение очереди заявок по инструменту.
@@ -181,10 +190,32 @@ api.move_order(company, portfolio, order_id, targetprice)
 api.place_order(portfolio, company, action, _type, validity, price, amount, stop, cookie):
 ```
 ### set_my_close_pos
+Все закрытые позиции за текущую сессию
+Изменился торговый счёт.
+- mode -   1 - Активные
+                2 - Все
+- portfolio - Номер торгового счёта на торговой площадке
+```python
+api.set_my_close_pos(mode, company)
+```
 
 ### set_my_order
+Все приказы за текущую сессию
+- mode -   1 - Активные
+                2 - Все
+- portfolio - Номер торгового счёта на торговой площадке
+```python
+api.set_my_order(mode, company)
+```
 
 ### set_my_trade
+Все сделки за текущую сессию
+- mode -   1 - Активные
+                2 - Все
+- portfolio - Номер торгового счёта на торговой площадке
+```python
+api.set_my_trade(mode, company)
+```
 
 ### set_portfolio
 Изменился торговый счёт.
@@ -193,5 +224,15 @@ api.place_order(portfolio, company, action, _type, validity, price, amount, stop
 api.set_portfolio(portfolio)
 ```
 ### update_order
+Состояние приказа
+- portfolio - Номер торгового счёта на торговой площадке
+```python
+api.update_order(portfolio)
+```
 
 ### update_position
+Изменилась позиция 
+- portfolio - Номер торгового счёта на торговой площадке
+```python
+api.update_order(portfolio)
+```

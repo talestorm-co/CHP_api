@@ -49,8 +49,16 @@ class CHP_api:
 
         return _wrapper
 
-    def add_trade(self):
-        raise NotImplementedError()
+    def add_trade(self, portfolio: str):
+        """
+        Новая сделка
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/addtrade',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
 
     def cancel_bid_ask(self, company: str):
         """
@@ -58,7 +66,7 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company}
         resp = requests.post(f'http://{self.url}/api/instruments/cancelbidasks',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -72,15 +80,23 @@ class CHP_api:
         :param order_id: Id приказа на сервере котировок
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company,
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company,
                    "portfolio": portfolio, "orderid": order_id}
         resp = requests.post(f'http://{self.url}/api/order/cancel',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    def cancel_portfolio(self):
-        raise NotImplementedError()
+    def cancel_portfolio(self, portfolio: str):
+        """
+        Отмена получения информации по счету
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/CancelPortfolio',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
 
     def cancel_quotes(self, company: str):
         """
@@ -88,7 +104,7 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company}
         resp = requests.post(f'http://{self.url}/api/instruments/cancelquotes',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -100,7 +116,7 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company}
         resp = requests.post(f'http://{self.url}/api/instruments/cancelticks',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -162,7 +178,7 @@ class CHP_api:
         Заказать справочник доступных счетов.
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345"}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key}
         resp = requests.post(f'http://{self.url}/api/accountinformation/getprortfoliolist',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -186,7 +202,7 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company}
         resp = requests.post(f'http://{self.url}/api/instruments/listenbidasks',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -198,7 +214,7 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company}
         resp = requests.post(f'http://{self.url}/api/instruments/listenquotes',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -209,7 +225,7 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "Symbol": company}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "Symbol": company}
         resp = requests.post(f'http://{self.url}/api/instruments/listenticks',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
@@ -223,7 +239,7 @@ class CHP_api:
         :param targetprice: Новая цена приказа
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345",
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key,
                    "portfolio": portfolio, "symbol": company, "orderid": order_id,
                    "targetprice": targetprice}
         resp = requests.post(f'http://{self.url}/api/order/move',
@@ -268,7 +284,7 @@ class CHP_api:
         """
         my_data = {"login": self.user_login,
                    "password": self.password,
-                   "key": "12345",
+                   "key": self.key,
                    "portfolio": portfolio,
                    "symbol": company,
                    "action": action,
@@ -282,14 +298,48 @@ class CHP_api:
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
     
-    def set_my_close_pos(self):
-        raise NotImplementedError()
+    def set_my_close_pos(self, mode: int, portfolio: str):
+        """
+        Все закрытые позиции за текущую сессию
+        Изменился торговый счёт.
+        :param mode: 1 - Активные
+                     2 - Все
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio, "mode": mode}
+        resp = requests.post(f'http://{self.url}/api/GetMyPortfolioData/SetMyClosePos',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
-    def set_my_order(self):
-        raise NotImplementedError()
+    def set_my_order(self, mode: int, portfolio: str):
+        """
+        Все приказы за текущую сессию
+        :param mode: 1 - Активные
+                     2 - Все
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio, "mode": mode}
+        resp = requests.post(f'http://{self.url}/api/GetMyPortfolioData/SetMyOrder',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
-    def set_my_trade(self):
-        raise NotImplementedError()
+    def set_my_trade(self, mode: int, portfolio: str):
+        """
+        Все сделки за текущую сессию
+        :param mode: 1 - Активные
+                     2 - Все
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio, "mode": mode}
+        resp = requests.post(f'http://{self.url}/api/GetMyPortfolioData/SetMyTrade',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
     
     @_login_required
     def set_portfolio(self, portfolio: str):
@@ -298,17 +348,35 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": "12345", "portfolio": portfolio}
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio}
         resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/setportfolio',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
         return json.loads(resp.text)
 
-    def update_order(self):
-        raise NotImplementedError()
+    def update_order(self, portfolio: str):
+        """
+        Состояние приказа
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/UpdateOrder',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
     
-    def update_position(self):
-        raise NotImplementedError()
+    def update_position(self, portfolio: str):
+        """
+        Изменилась позиция 
+        :param portfolio: Номер торгового счёта на торговой площадке
+        :return:
+        """
+        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio}
+        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/UpdatePosition',
+                             json=my_data,
+                             headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     def _test(self):
         return True
