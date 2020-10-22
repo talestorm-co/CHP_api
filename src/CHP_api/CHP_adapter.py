@@ -21,6 +21,7 @@ class CHP_api:
         self.url = api_url
         if port:
             self.url += f":{port}"
+        
 
     def login(self, user_login: str, password: str, key: str):
         """
@@ -29,6 +30,16 @@ class CHP_api:
         :param password: Пароль пользователя
         :param key: Ключ пользователя
         """
+        resp = requests.post(f'https://{self.url}/api/Test/CheckConnect',
+                        json={
+                            "login": user_login,
+                            "password": password, 
+                            "key": key},
+                        headers={'Content-Type': 'application/json'})
+        resp = json.loads(resp.text)                        
+        if not resp[0]['Result']:
+            raise LoginException('Can\'t login. Send another login or password.')
+        
         self.user_login = user_login
         self.password = password
         self.key = key
