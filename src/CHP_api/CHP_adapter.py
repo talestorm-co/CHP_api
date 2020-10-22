@@ -44,6 +44,12 @@ class CHP_api:
         self.password = password
         self.key = key
 
+        self.user_data = {
+                            "login": user_login,
+                            "password": password, 
+                            "key": key
+                            }
+
 
     def _login_required(func: Callable):
         """
@@ -57,19 +63,23 @@ class CHP_api:
                     not self.key:
                 raise LoginException('Нет логина, пароля или ключа. выполните метод login.')
             return func(self, *args, **kwargs)
-
         return _wrapper
 
+    @_login_required
     def add_trade(self, portfolio: str):
         """
         Новая сделка
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        my_data = {"login": self.user_login, "password": self.password, "key": self.key, "portfolio": portfolio}
-        resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/addtrade',
-                             json=my_data,
-                             headers={'Content-Type': 'application/json'})
+        spec_data = {"portfolio": portfolio} # create specific data fields
+
+        data = {**self.user_data, **spec_data} # create full data with login information
+        resp = requests.post(
+            f'http://{self.url}/api/accountinformation/listenportfolio/addtrade',
+            json=data,
+            headers={'Content-Type': 'application/json'}
+            )
 
     def cancel_bid_ask(self, company: str):
         """
