@@ -1,2 +1,1 @@
-# from .CHP_adapter import CHP_api
-
+from .CHP_adapter import CHP_api
