@@ -1,5 +1,5 @@
 from setuptools import setup, find_packages
-from src.CHP_api.__init__ import __version__
+
 
 import pathlib
 
@@ -9,7 +9,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(name='CHP_api',
-      version=__version__,
+      version='0.0.5b',
       description='Simple python adaptor for CHP_REST',
       long_description=long_description,
       long_description_content_type='text/markdown',
