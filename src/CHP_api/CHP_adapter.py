@@ -30,7 +30,7 @@ class CHP_api:
         :param password: Пароль пользователя
         :param key: Ключ пользователя
         """
-        resp = requests.post(f'https://{self.url}/api/Test/CheckConnect',
+        resp = requests.post(f'http://{self.url}/api/Test/CheckConnect',
                         json={
                             "login": user_login,
                             "password": password, 
