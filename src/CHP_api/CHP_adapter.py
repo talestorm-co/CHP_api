@@ -11,13 +11,13 @@ class CHP_api:
     password: Optional[str] = None
     key: Optional[str] = None
 
-    def __init__(self, api_url: str, port: Optional[Union[str, int]] = None):
+    def __init__(self, api_url: str, port: Optional[Union[str, int]] = None, enable_SSL = True):
         """
 
         :param api_url: URL или IP сервера
         :param port: Порт сервера (опционально)
         """
-
+        self.ssl = True
         self.url = api_url
         if port:
             self.url += f":{port}"
@@ -80,6 +80,7 @@ class CHP_api:
             json=data,
             headers={'Content-Type': 'application/json'}
             )
+        return json.loads(resp.text)
 
     def cancel_bid_ask(self, company: str):
         """
@@ -118,6 +119,7 @@ class CHP_api:
         resp = requests.post(f'http://{self.url}/api/accountinformation/listenportfolio/CancelPortfolio',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     @_login_required
     def cancel_quotes(self, company: str):
@@ -243,6 +245,7 @@ class CHP_api:
         resp = requests.post(f'http://{self.url}/api/instruments/listenquotes',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     @_login_required
     def listen_ticks(self, company: str):
@@ -255,6 +258,7 @@ class CHP_api:
         resp = requests.post(f'http://{self.url}/api/instruments/listenticks',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     @_login_required
     def move_order(self, company: str, portfolio: str, order_id: str, targetprice: float):
@@ -272,6 +276,7 @@ class CHP_api:
         resp = requests.post(f'http://{self.url}/api/order/move',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
 
     @_login_required
     def place_order(self, portfolio: str, company: str, action: int, _type: int, validity: int, price: float,
@@ -325,6 +330,7 @@ class CHP_api:
         resp = requests.post(f'http://{self.url}/api/order/move',
                              json=my_data,
                              headers={'Content-Type': 'application/json'})
+        return json.loads(resp.text)
    
     @_login_required 
     def set_my_close_pos(self, mode: int, portfolio: str):
