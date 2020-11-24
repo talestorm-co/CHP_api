@@ -18,35 +18,39 @@ api.get_bars("GAZP", 3, "2020-10-15", 2)
     {'row': 1, 'nrows': 2, ... 'volume': 439310, 'openInt': 0}]
 ```
 
-## All Methods
-[add_trade](#add_trade)  
-[cancel_bid_ask](#cancel_bid_ask)  
-[cancel_order](#cancel_order)  
-[cancel_portfolio](#cancel_portfolio)  
-[cancel_quotes](#cancel_quotes)  
-[cancel_ticks](#cancel_ticks)  
-[get_bars](#get_bars)  
-[get_trades](#get_trades)  
-[get_portfolio_list](#get_portfolio_list)  
-[get_symbols](#get_symbols)  
-[listen_bid_asks](#listen_bid_asks)  
-[listen_quotes](#listen_quotes)  
-[listen_ticks](#listen_ticks)  
-[move_order](#move_order)  
-[place_order](#place_order)  
-[set_my_close_pos](#set_my_close_pos)  
-[set_my_order](#set_my_order)  
-[set_my_trade](#set_my_trade)  
-[set_portfolio](#set_portfolio)  
-[update_order](#update_order)  
-[update_position](#update_position)  
+## All Methods:
+ - [add_trade | addTrade](#add_trade)  
+ - [cancel_bid_ask | cancelBidAsk](#cancel_bid_ask)  
+ - [cancel_order | cancelOrder](#cancel_order)  
+ - [cancel_portfolio | cancelPortfolio](#cancel_portfolio)  
+ - [cancel_quotes | cancelQuotes](#cancel_quotes)  
+ - [cancel_ticks | cancelTicks](#cancel_ticks)  
+ - [get_bars | getBars](#get_bars)  
+ - [get_trades | get_trades](#get_trades)  
+ - [get_portfolio_list | getPortfolioList](#get_portfolio_list)  
+ - [get_symbols | getSymbols](#get_symbols)  
+ - [listen_bid_asks | listenBidAsks](#listen_bid_asks)  
+ - [listen_quotes | listenQuotes](#listen_quotes)  
+ - [listen_ticks | listenTicks](#listen_ticks)  
+ - [listen_ticks | listenTicks](#move_order)  
+ - [place_order | placeOrder](#place_order)  
+ - [set_my_close_pos | setMyClosePos](#set_my_close_pos)  
+ - [set_my_order | setMyOrder](#set_my_order)  
+ - [set_my_trade | setMyTrade](#set_my_trade)  
+ - [set_portfolio | setPortfolio](#set_portfolio)  
+ - [update_order | updateOrder](#update_order)  
+ - [update_position | updatePosition](#update_position)  
 
 
 ### add_trade
 Новая сделка 
 - portfolio - Номер торгового счёта на торговой площадке
 ```python
-api.add_trade(self, portfolio: str):
+api.add_trade(portfolio)
+```
+или
+```python
+api.addTrade(portfolio)
 ```
 
 ### cancel_bid_ask
@@ -54,6 +58,10 @@ api.add_trade(self, portfolio: str):
 * company - Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: "GAZP", Яндекс: "YNDX")
 ```python
 api.cancel_bid_ask(company)
+```
+или
+```python
+api.cancelBidAsk(company)
 ```
 ### cancel_order
 Отменяет приказ, выставленный на рынок методом PlaceOrder.
@@ -63,11 +71,20 @@ api.cancel_bid_ask(company)
 ```python
 api.cancel_order(company, portfolio, order_id)
 ```
+или
+```python
+api.cancelOrder(company, portfolio, order_id)
+```
+
 ### cancel_portfolio   
 Отмена получения информации по счету
 - portfolio: Номер торгового счёта на торговой площадке   
 ```python
-api.cancel_portfolio(self, portfolio: str):
+api.cancel_portfolio(portfolio)
+```
+или
+```python
+api.cancelPortfolio(portfolio)
 ```
 
 ### cancel_quotes
@@ -76,12 +93,22 @@ api.cancel_portfolio(self, portfolio: str):
 ```python
 api.cancel_quotes(company)
 ```
+или
+```python
+api.cancelQuotes(company)
+```
+
 ### cancel_ticks
 Отменяет получение очереди заявок по инструменту.
 * company - Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: "GAZP", Яндекс: "YNDX")
 ```python
 api.cancel_ticks(company)
 ```
+или
+```python
+api.cancelTicks(company)
+```
+
 ### get_bars
 - company - Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
 - interval - Интервал времени.
@@ -106,6 +133,10 @@ api.cancel_ticks(company)
 ```python
 api.get_bars(company, interval, since, count)
 ```
+или
+```python
+api.getBars(company, interval, since, count)
+```
 
 ### get_trades
 Заказать тиковую историю сделок по инструменту. 
@@ -115,11 +146,19 @@ api.get_bars(company, interval, since, count)
 ```python
 api.get_trades(symbol, count, time_from)
 ```
+или
+```python
+api.getTrades(symbol, count, time_from)
+```
 
 ### get_portfolio_list
 Заказать справочник доступных счетов.
 ```python
 api.get_portfolio_list()
+```
+или 
+```python
+api.getPortfolioList()
 ```
 
 ### get_symbols
@@ -127,6 +166,11 @@ api.get_portfolio_list()
 ```python
 api.get_symbols()
 ```
+или
+```python
+api.getSymbols()
+```
+
 ### listen_bid_asks
 Заказать очередь заявок по инструменту.
 - company - Код ЦБ из таблицы котировок TC Matrix
