@@ -3,10 +3,10 @@ import requests
 import functools
 from typing import Optional, Union, Dict, Callable, List
 from .CHPExceptions import LoginException
-from .CHPTyping import (
-    Symbol_t,
-    Bar_t
-)
+# from .CHPTyping import (
+#     Symbol_t,
+#     Bar_t
+# )
 
 
 class CHP_api:
@@ -171,7 +171,7 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_bars(self, company: str, interval: int, since: str, count: int) -> List[Bar_t]:
+    def get_bars(self, company: str, interval: int, since: str, count: int) -> List[Dict]:
         """
 
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
@@ -250,7 +250,7 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_symbols(self) -> List[Symbol_t]:
+    def get_symbols(self) -> List[Dict]:
         """
         Заказать справочник ЦБ.
         :return:
@@ -387,7 +387,7 @@ class CHP_api:
         data = {**self.user_data, **spec_data}
 
         resp = requests.post(
-            f'{self.url}/api/order/move',
+            f'{self.url}/api/order/place',
             json=data,
             headers={'Content-Type': 'application/json'}
         )
