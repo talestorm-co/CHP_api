@@ -3,6 +3,10 @@ import requests
 import functools
 from typing import Optional, Union, Dict, Callable, List
 from .CHPExceptions import LoginException
+from .CHPTyping import (
+    Symbol_t,
+    Bar_t
+)
 
 
 class CHP_api:
@@ -167,7 +171,7 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_bars(self, company: str, interval: int, since: str, count: int):
+    def get_bars(self, company: str, interval: int, since: str, count: int) -> List[Bar_t]:
         """
 
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
@@ -191,7 +195,7 @@ class CHP_api:
             «назад» по времени в прошлое от указанной даты; если
             отрицательно – то «вперед»
         :return:
-        dict[str, str]
+        List[Bar_t]
         """
 
         spec_data = {
@@ -246,7 +250,7 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_symbols(self):
+    def get_symbols(self) -> List[Symbol_t]:
         """
         Заказать справочник ЦБ.
         :return:
