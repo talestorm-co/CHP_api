@@ -10,6 +10,21 @@ from .CHPExceptions import LoginException
 #     Bar_t
 # )
 
+def _login_required(func: Callable):
+    """
+        decorator who check what login, password and key are initialized
+    """
+
+    @functools.wraps(func)
+    def _wrapper(self, *args, **kwargs):
+        if not self._user_data['login'] or \
+                not self._user_data['password'] or \
+                not self._user_data['key']:
+            raise LoginException('Нет логина, пароля или ключа. выполните метод login.')
+        return func(self, *args, **kwargs)
+
+    return _wrapper
+
 
 class CHP_api:
     user_login: Optional[str] = None
@@ -23,15 +38,29 @@ class CHP_api:
         :param port: Порт сервера
         """
 
-        self.url = f'https://{api_url}' if enable_SSL else f'http://{api_url}'
+        self.url = f"{ 'https://' if enable_SSL else 'http://'}{api_url}"
         if port:
             self.url += f":{port}"
 
-        self.user_data = {
+        self._user_data = {
             "login": None,
             "password": None,
             "key": None
         }
+
+    def get_json_data(self, spec_data: Dict = {}):
+        return {**self._user_data, **spec_data}
+
+    def _req(self, sub_url:str, data: Dict = {}):
+
+        json_data = self.get_json_data(data)
+        
+        resp = requests.post(
+            f'{self.url}{sub_url}',
+            json=json_data,
+            headers={'Content-Type': 'application/json'}
+        )
+        return resp
 
     def login(self, user_login: str, password: str, key: str) -> None:
         """
@@ -45,26 +74,11 @@ class CHP_api:
         # self.password = password
         # self.key = key
 
-        self.user_data = {
+        self._user_data = {
             "login": user_login,
             "password": password,
             "key": key
         }
-
-    def _login_required(func: Callable):
-        """
-            decorator who check what login, password and key are initialized
-        """
-
-        @functools.wraps(func)
-        def _wrapper(self, *args, **kwargs):
-            if not self.user_data['login'] or \
-                    not self.user_data['password'] or \
-                    not self.user_data['key']:
-                raise LoginException('Нет логина, пароля или ключа. выполните метод login.')
-            return func(self, *args, **kwargs)
-
-        return _wrapper
 
     @_login_required
     def add_trade(self, portfolio: str):
@@ -73,13 +87,9 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {"portfolio": portfolio}  # create specific data fields
-
-        data = {**self.user_data, **spec_data}  # create full data with login information
-        resp = requests.post(
-            f'{self.url}/api/accountinformation/listenportfolio/addtrade',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/accountinformation/listenportfolio/addtrade',
+            data={"portfolio": portfolio}
         )
         return json.loads(resp.text)
 
@@ -90,14 +100,11 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        spec_data = {"Symbol": company}  # create specific data fields
-        data = {**self.user_data, **spec_data}  # create full data with login information
-
-        resp = requests.post(
-            f'{self.url}/api/instruments/cancelbidasks',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/instruments/cancelbidasks',
+            data={"Symbol": company}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -109,18 +116,16 @@ class CHP_api:
         :param order_id: Id приказа на сервере котировок
         :return:
         """
-        spec_data = {
-            "Symbol": company,
-            "portfolio": portfolio,
-            "orderid": order_id
-        }
-        data = {**self.user_data, **spec_data}  # create full data with login information
 
-        resp = requests.post(
-            f'{self.url}/api/order/cancel',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/order/cancel',
+            data={
+                "Symbol": company,
+                "portfolio": portfolio,
+                "orderid": order_id
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -131,14 +136,11 @@ class CHP_api:
         :return:
         """
 
-        spec_data = {"portfolio": portfolio}
-        data = {**self.user_data, **spec_data}  # create full data with login information
-
-        resp = requests.post(
-            f'{self.url}/api/accountinformation/listenportfolio/CancelPortfolio',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/accountinformation/listenportfolio/CancelPortfolio',
+            data={"portfolio": portfolio}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -148,14 +150,12 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        spec_data = {"Symbol": company}
-        data = {**self.user_data, **spec_data}  # create full data with login information
 
-        resp = requests.post(
-            f'http://{self.url}/api/instruments/cancelquotes',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/instruments/cancelquotes',
+            data={"Symbol": company}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -165,20 +165,17 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        spec_data = {"Symbol": company}
-        data = {**self.user_data, **spec_data}  # create full data with login information
 
-        resp = requests.post(
-            f'{self.url}/api/instruments/cancelticks',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/instruments/cancelticks',
+            data={"Symbol": company}
         )
+
         return json.loads(resp.text)
 
     @_login_required
     def get_bars(self, company: str, interval: int, since: str, count: int) -> List[Dict]:
         """
-
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :param interval: Интервал времени.
             1 - минута,
@@ -203,19 +200,16 @@ class CHP_api:
         List[Bar_t]
         """
 
-        spec_data = {
-            "symbol": company,
-            "interval": interval,
-            "since": since,
-            "count": count
-        }
-        data = {**self.user_data, **spec_data}  # create full data with login information
-
-        resp = requests.post(
-            f'{self.url}/api/instruments/getbars',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/instruments/getbars',
+            data={
+                "symbol": company,
+                "interval": interval,
+                "since": since,
+                "count": count
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -227,17 +221,16 @@ class CHP_api:
         :param time_from: Время
         :return:
         """
-        spec_data = {
-            "symbol": company,
-            "count": count,
-            "from": time_from
-        }
-        data = {**self.user_data, **spec_data}  # create full data with login information
-        resp = requests.post(
-            f'{self.url}/api/instruments/gettrade',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+
+        resp = self._req(
+            sub_url='/api/instruments/gettrade',
+            data={
+                "symbol": company,
+                "count": count,
+                "from": time_from
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -246,12 +239,11 @@ class CHP_api:
         Заказать справочник доступных счетов.
         :return:
         """
-        data = self.user_data
-        resp = requests.post(
-            f'{self.url}/api/accountinformation/getprortfoliolist',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+
+        resp = self._req(
+            sub_url='/api/accountinformation/getprortfoliolist'
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -260,12 +252,11 @@ class CHP_api:
         Заказать справочник ЦБ.
         :return:
         """
-        data = self.user_data
-        resp = requests.post(
-            f'{self.url}/api/instruments/getsymbols',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+
+        resp = self._req(
+            sub_url='/api/instruments/getsymbols'
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -275,13 +266,12 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        spec_data = {"Symbol": company}
-        data = {**self.user_data, **spec_data}
-        resp = requests.post(
-            f'{self.url}/api/instruments/listenbidasks',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+
+        resp = self._req(
+            sub_url='/api/instruments/listenbidasks',
+            data={"Symbol": company}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -291,14 +281,12 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        spec_data = {"Symbol": company}
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/instruments/listenquotes',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/instruments/listenquotes',
+            data={"Symbol": company}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -308,13 +296,12 @@ class CHP_api:
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :return:
         """
-        spec_data = {"Symbol": company}
-        data = {**self.user_data, **spec_data}
-        resp = requests.post(
-            f'{self.url}/api/instruments/listenticks',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+
+        resp = self._req(
+            sub_url='/api/instruments/listenticks',
+            data={"Symbol": company}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -327,19 +314,17 @@ class CHP_api:
         :param targetprice: Новая цена приказа
         :return:
         """
-        spec_data = {
-            "portfolio": portfolio,
-            "symbol": company,
-            "orderid": order_id,
-            "targetprice": targetprice
-        }
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/order/move',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/order/move',
+            data={
+                "portfolio": portfolio,
+                "symbol": company,
+                "orderid": order_id,
+                "targetprice": targetprice
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -379,23 +364,22 @@ class CHP_api:
                     OrderFailed и UpdateOrders
         :return:
         """
-        spec_data = {
-            "portfolio": portfolio,
-            "symbol": company,
-            "action": action,
-            "Type": _type,
-            "validity": validity,
-            "price": price,
-            "amount": amount,
-            "stop": stop,
-            "cookie": cookie}
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/order/place',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/order/place',
+            data={
+                "portfolio": portfolio,
+                "symbol": company,
+                "action": action,
+                "Type": _type,
+                "validity": validity,
+                "price": price,
+                "amount": amount,
+                "stop": stop,
+                "cookie": cookie
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -408,16 +392,15 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {
-            "portfolio": portfolio,
-            "mode": mode
-        }
-        data = {**self.user_data, **spec_data}
-        resp = requests.post(
-            f'{self.url}/api/GetMyPortfolioData/SetMyClosePos',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+
+        resp = self._req(
+            sub_url='/api/GetMyPortfolioData/SetMyClosePos',
+            data={
+                "portfolio": portfolio,
+                "mode": mode
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -429,17 +412,15 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {
-            "portfolio": portfolio,
-            "mode": mode
-        }
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/GetMyPortfolioData/SetMyOrder',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/GetMyPortfolioData/SetMyOrder',
+            data={
+                "portfolio": portfolio,
+                "mode": mode
+            }
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -451,16 +432,13 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {
-            "portfolio": portfolio,
-            "mode": mode
-        }
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/GetMyPortfolioData/SetMyTrade',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/GetMyPortfolioData/SetMyTrade',
+            data={
+                "portfolio": portfolio,
+                "mode": mode
+            }
         )
         return json.loads(resp.text)
 
@@ -471,14 +449,12 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {"portfolio": portfolio}
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/accountinformation/listenportfolio/setportfolio',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/accountinformation/listenportfolio/setportfolio',
+            data={"portfolio": portfolio}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -488,14 +464,12 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {"portfolio": portfolio}
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/accountinformation/listenportfolio/UpdateOrder',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/accountinformation/listenportfolio/UpdateOrder',
+            data={"portfolio": portfolio}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -505,14 +479,12 @@ class CHP_api:
         :param portfolio: Номер торгового счёта на торговой площадке
         :return:
         """
-        spec_data = {"portfolio": portfolio}
-        data = {**self.user_data, **spec_data}
 
-        resp = requests.post(
-            f'{self.url}/api/accountinformation/listenportfolio/UpdatePosition',
-            json=data,
-            headers={'Content-Type': 'application/json'}
+        resp = self._req(
+            sub_url='/api/accountinformation/listenportfolio/UpdatePosition',
+            data={"portfolio": portfolio}
         )
+
         return json.loads(resp.text)
 
     # camelCase aliases
