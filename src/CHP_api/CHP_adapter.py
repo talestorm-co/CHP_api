@@ -3,6 +3,8 @@ import requests
 import functools
 from typing import Optional, Union, Dict, Callable, List
 from .CHPExceptions import LoginException
+
+
 # from .CHPTyping import (
 #     Symbol_t,
 #     Bar_t
@@ -14,7 +16,7 @@ class CHP_api:
     password: Optional[str] = None
     key: Optional[str] = None
 
-    def __init__(self, api_url: str, port: Optional[Union[str, int]] = None, *,  enable_SSL=False):
+    def __init__(self, api_url: str, port: Optional[Union[str, int]] = None, *, enable_SSL=False):
         """
 
         :param api_url: URL или IP сервера
@@ -81,6 +83,7 @@ class CHP_api:
         )
         return json.loads(resp.text)
 
+    @_login_required
     def cancel_bid_ask(self, company: str):
         """
         Отменяет получение очереди заявок по инструменту.
@@ -97,6 +100,7 @@ class CHP_api:
         )
         return json.loads(resp.text)
 
+    @_login_required
     def cancel_order(self, company: str, portfolio: str, order_id: str):
         """
         Отменяет приказ, выставленный на рынок методом PlaceOrder.
@@ -119,6 +123,7 @@ class CHP_api:
         )
         return json.loads(resp.text)
 
+    @_login_required
     def cancel_portfolio(self, portfolio: str):
         """
         Отмена получения информации по счету
@@ -375,15 +380,15 @@ class CHP_api:
         :return:
         """
         spec_data = {
-                   "portfolio": portfolio,
-                   "symbol": company,
-                   "action": action,
-                   "Type": _type,
-                   "validity": validity,
-                   "price": price,
-                   "amount": amount,
-                   "stop": stop,
-                   "cookie": cookie}
+            "portfolio": portfolio,
+            "symbol": company,
+            "action": action,
+            "Type": _type,
+            "validity": validity,
+            "price": price,
+            "amount": amount,
+            "stop": stop,
+            "cookie": cookie}
         data = {**self.user_data, **spec_data}
 
         resp = requests.post(

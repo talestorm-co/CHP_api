@@ -22,7 +22,7 @@ class Symbol_t(TypedDict):
     type: str
 
 
-class Bar_t(TypedDict):
+class Bar_t(TypedDict ):
     close: float
     datetime: str
     high: float
