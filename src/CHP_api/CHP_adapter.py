@@ -1,37 +1,19 @@
 import json
 import requests
 import functools
-from typing import Optional, Union, Dict, Callable, List
+import typing 
 from .CHPExceptions import LoginException
 
 
-# from .CHPTyping import (
-#     Symbol_t,
-#     Bar_t
-# )
 
-def _login_required(func: Callable):
-    """
-        decorator who check what login, password and key are initialized
-    """
-
-    @functools.wraps(func)
-    def _wrapper(self, *args, **kwargs):
-        if not self._user_data['login'] or \
-                not self._user_data['password'] or \
-                not self._user_data['key']:
-            raise LoginException('Нет логина, пароля или ключа. выполните метод login.')
-        return func(self, *args, **kwargs)
-
-    return _wrapper
 
 
 class CHP_api:
-    user_login: Optional[str] = None
-    password: Optional[str] = None
-    key: Optional[str] = None
+    user_login: typing.Optional[str] = None
+    password: typing.Optional[str] = None
+    key: typing.Optional[str] = None
 
-    def __init__(self, api_url: str, port: Optional[Union[str, int]] = None, *, enable_SSL=False):
+    def __init__(self, api_url: str, port: typing.Optional[typing.Union[str, int]] = None, *, enable_SSL: bool=False):
         """
 
         :param api_url: URL или IP сервера
@@ -42,18 +24,18 @@ class CHP_api:
         if port:
             self.url += f":{port}"
 
-        self._user_data = {
+        self._user_data: typing.Dict[str, typing.Optional[str]] = {
             "login": None,
             "password": None,
             "key": None
         }
 
-    def get_json_data(self, spec_data: Dict = {}):
+    def _get_json_data(self, spec_data: typing.Dict = {}) -> typing.Dict:
         return {**self._user_data, **spec_data}
 
-    def _req(self, sub_url:str, data: Dict = {}):
+    def _req(self, sub_url: str, data: typing.Dict = {}) -> requests.Response:
 
-        json_data = self.get_json_data(data)
+        json_data = self._get_json_data(data)
         
         resp = requests.post(
             f'{self.url}{sub_url}',
@@ -80,6 +62,24 @@ class CHP_api:
             "key": key
         }
 
+    def _login_required(func: typing.Callable):
+        """
+            decorator who check what login, password and key are initialized
+        """
+
+        @functools.wraps(func)
+        def _wrapper(self, *args, **kwargs):
+            if not self._user_data['login']:
+                raise LoginException('Нет логина. выполните метод login.')
+            elif not self._user_data['password']:
+                raise LoginException('Нет пароля. выполните метод login.')
+            elif not self._user_data['key']:
+                raise LoginException('Нет ключа. выполните метод login.')
+            else:
+                return func(self, *args, **kwargs)
+
+        return _wrapper
+
     @_login_required
     def add_trade(self, portfolio: str):
         """
@@ -91,6 +91,7 @@ class CHP_api:
             sub_url='/api/accountinformation/listenportfolio/addtrade',
             data={"portfolio": portfolio}
         )
+
         return json.loads(resp.text)
 
     @_login_required
@@ -111,7 +112,7 @@ class CHP_api:
     def cancel_order(self, company: str, portfolio: str, order_id: str):
         """
         Отменяет приказ, выставленный на рынок методом PlaceOrder.
-        :param company: Номер торгового счёта на торговой площадке.
+        :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :param portfolio: Номер торгового счёта на торговой площадке.
         :param order_id: Id приказа на сервере котировок
         :return:
@@ -174,7 +175,7 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_bars(self, company: str, interval: int, since: str, count: int) -> List[Dict]:
+    def get_bars(self, company: str, interval: int, since: str, count: int) -> typing.List[typing.Dict]:
         """
         :param company: Код ЦБ из таблицы котировок TC Matrix (Пример Газпром: GAZP, Яндекс: YNDX)
         :param interval: Интервал времени.
@@ -197,7 +198,7 @@ class CHP_api:
             «назад» по времени в прошлое от указанной даты; если
             отрицательно – то «вперед»
         :return:
-        List[Bar_t]
+        typing.List[Bar_t]
         """
 
         resp = self._req(
@@ -247,7 +248,7 @@ class CHP_api:
         return json.loads(resp.text)
 
     @_login_required
-    def get_symbols(self) -> List[Dict]:
+    def get_symbols(self) -> typing.List[typing.Dict]:
         """
         Заказать справочник ЦБ.
         :return:
