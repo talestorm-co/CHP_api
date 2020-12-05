@@ -1,32 +1,31 @@
 import requests
-import typing
+import typing as t
 
 
 # http://85.143.79.6:5001
 
 class Api:
 
-    def __init__(self, url, port, ssh=False):
+    def __init__(self, host: str, port: t.Union[int, str], ssh=False) -> None:
 
         if port:
-            self.url = f"{'https://' if ssh else 'http://'}{url}"
+            self._host_url = f"{'https://' if ssh else 'http://'}{host}"
             if port:
-                self.url += f":{port}"
+                self._host_url += f":{port}"
 
-    def _req(self, sub_url: str, data: typing.Dict = {}) -> requests.Response:
-        json_data = self._get_json_data(data)
+    def _req_method(self, method_url: str, method_data: t.Optional[t.Dict] = None) -> requests.Response:
 
         resp = requests.post(
-            f'{self.url}/{sub_url}',
-            json=json_data,
+            f'{self._host_url}/{method_url}',
+            json=method_data,
             headers={'Content-Type': 'application/json'}
         )
         return resp
 
     def Connect(self, login, password, token, mode):
-        resp = self._req(
+        resp = self._req_method(
                         'Auth/Connected',
-                        data={
+                        method_data={
                             'login': login,
                             'password': password,
                             'token': token,
@@ -117,4 +116,4 @@ class Api:
 
 
 if __name__ == '__main__':
-    api = Api(url="fdfdfd", port=5000)
+    api = Api(host="fdfdfd", port=5000)
