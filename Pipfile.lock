@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f1c95d7e7a98fa4b74a5f0385b7be140911eff5244ceecd6b3454aba5c7183d9"
+            "sha256": "39d99c7dadd2a67b946a208d5f100aff8c7145bd0a092e4e914515c1b97d85d2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -29,6 +29,10 @@
                 "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"
             ],
             "version": "==3.0.4"
+        },
+        "chp-api": {
+            "editable": true,
+            "path": "."
         },
         "idna": {
             "hashes": [

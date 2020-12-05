@@ -6,9 +6,9 @@ verify_ssl = true
 [dev-packages]
 mypy = "*"
 
-
 [packages]
 requests = "2.25.0"
+chp-api = {editable = true, path = "."}
 
 [requires]
 python_version = "3.9"
