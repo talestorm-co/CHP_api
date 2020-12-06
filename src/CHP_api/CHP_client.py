@@ -19,9 +19,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             token: str,
             mode: int = 0
     ) -> None:
-
         """
-
 
         :param host: host url of api server.
             For example: '127.0.0.1'

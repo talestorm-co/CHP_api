@@ -77,11 +77,11 @@ class Api:
         resp = self._req_method(
             method_url='Instruments/GetBars',
             method_data={
-                'token': token,
-                "Since": since,
-                "Interval": interval,
-                'symbol': symbol,
-                'count': count,
+                "token": token,
+                "since": since,
+                "interval": interval,
+                "symbol": symbol,
+                "count": count,
             }
         )
 
@@ -204,8 +204,9 @@ class Api:
                 "symbol": symbol
             }
         )
+        return resp
 
-    def ListenTicks(self, token: str, symbol: str) -> requests.Response:  # Todo
+    def ListenTicks(self, token: str, symbol: str) -> requests.Response:
         """
 
         :param token: user auth token
@@ -220,9 +221,6 @@ class Api:
             }
         )
         return resp
-
-    def UpdateTicks(self, ):  # Todo
-        pass
 
     def AddTick(self, token: str) -> requests.Response:
         """
@@ -239,7 +237,7 @@ class Api:
         )
         return resp
 
-    def CancelTicks(self, ):  # Todo
+    def CancelTicks(self, token: str, symbol: str):  # Todo что отправлять?
         pass
 
     def ListenBidAsks(self, token: str, symbol: str) -> requests.Response:
@@ -258,7 +256,7 @@ class Api:
         )
         return resp
 
-    def UpdateBidAsks(self, ):  # Todo
+    def UpdateBidAsks(self, ):  # Todo нет в доке
         pass
 
     def CancelBidAsks(self, token: str, symbol: str) -> requests.Response:
@@ -277,11 +275,71 @@ class Api:
         )
         return resp
 
-    def ListenPortfolio(self, token: str, ):
-        pass
+    def ListenPortfolio(self, token: str, portfolio: str) -> requests.Response:
+        # TODO Проверить
+        """
 
-    def PlaceOrder(self, token, portfolio, symbol, action, type, validity, price, amount, stop, cookie):  # TODO
-        pass
+        :param token: user auth token
+        :param portfolio: portfolio name on the trading platform. Like "ST125465-MO-01"
+        :return:
+        """
+        resp = self._req_method(
+            method_url='AccountInformation/ListenPortfolio',
+            method_data={
+                "token": token,
+                "portfolio": portfolio
+            }
+        )
+        return resp
+
+    def PlaceOrder(self, token: str, portfolio: str, symbol: str, action: int, type_: int, validity: int,
+                   price: float, amount: float, stop: float,
+                   cookie: float):  # TODO
+        """
+
+        :param token: user auth token
+        :param portfolio: portfolio name on the trading platform. Like "ST125465-MO-01"
+        :param symbol: Код ЦБ из таблицы котировок TC Matrix
+        :param action: Вид торговой операции. Принимает следующие значения:
+                    1 - Купить
+                    2 - Продать
+                    3 - Открыть «короткую позицию»
+                    4 – Закрыть «короткую» позицию
+        :param type_: Тип приказа. Принимает следующие значения:
+                    1 - Приказ по рынку
+                    2 - Лимитированный приказ
+                    3 - Стоп приказ
+                    4 – приказ Стоп-Лимит
+        :param validity: Срок действия приказа. Принимает следующие значения:
+                    1 - День
+                    2 – GTC (до отмены, макс. 30 дней)
+        :param price: Цена Лимит - для заявок типа Лимит и Стоп-Лимит
+                    0 - для приказа: По рынку или Стоп
+        :param amount: Объем, ЦБ в приказе
+        :param stop: Цена СТОП для приказа типа Стоп и Стоп-Лимит
+                    0 - для приказа: По рынку или Лимит
+        :param cookie: Ваш уникальный номер приказа, используется для
+                    определения Id приказа через события OrderSucceeded/
+                    OrderFailed и UpdateOrders
+        :return:
+        """
+        resp = self._req_method(
+            method_url='Order/Place',
+            method_data={
+                "token": token,
+                "portfolio": portfolio,
+                "symbol": symbol,
+                "action": action,
+                "type": type_,
+                "validity": validity,
+                "price": price,
+                "amount": amount,
+                "stop": stop,
+                "cookie": cookie
+
+            }
+        )
+        return resp
 
     def MoveOrder(self, token, portfolio, symbol, orderid, targetprice):  # TODO
         resp = self._req_method(
