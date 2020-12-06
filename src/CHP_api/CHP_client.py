@@ -1,5 +1,5 @@
 import typing as t
-from json import loads
+from json import loads as jsonify
 
 from CHP_api.CHP_lowlevel_api import Api
 from CHP_api.utils.Meta import SmartClientSingleton
@@ -7,9 +7,6 @@ from CHP_api.CHPExceptions import (
     ApiConnectionError,
     ApiRequestException
 )
-
-
-
 
 
 class ChpClient(metaclass=SmartClientSingleton):
@@ -39,13 +36,15 @@ class ChpClient(metaclass=SmartClientSingleton):
         self._api = Api(host=host, port=port, ssh=False)
 
         connect_resp = self._api.Connect(login=login, password=password, token=token, mode=mode)
-        connect_resp = loads(connect_resp.text)
+        connect_resp = jsonify(connect_resp.text)
         if not connect_resp['result']:
             raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
 
         self._token: str = token
         self._login: str = login
         self._password: str = password
+
+        self.__listening_quotes: t.List = []
 
     @property
     def token(self) -> str:
@@ -58,6 +57,10 @@ class ChpClient(metaclass=SmartClientSingleton):
     @property
     def password(self) -> str:
         return self._password
+
+    @property
+    def listening_quotes(self) -> t.List[str]:
+        return [*self.__listening_quotes]
 
     @staticmethod
     def _check_response(resp):
@@ -80,7 +83,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             symbol=symbol,
             count=count
         )
-        resp = loads(resp.text)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
@@ -91,7 +94,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         :return:
         """
         resp = self._api.GetSymbols(token=self._token)
-        resp = loads(resp.text)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
@@ -104,7 +107,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             symbol=symbol,
             count=count
         )
-        resp = loads(resp.text)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
@@ -116,14 +119,46 @@ class ChpClient(metaclass=SmartClientSingleton):
         :return:
         """
         if not isinstance(symbols, list):
-            raise TypeError('the variable must be list instance')
+            raise TypeError('the symbols must be list instance')
 
         results = {}
         for symbol in symbols:
-            resp = self._api.ListenQuotes(token=self._token, symbol=symbol)
-            resp = loads(resp.text)
+            if symbol not in self.__listening_quotes:
+                resp = self._api.ListenQuotes(token=self._token, symbol=symbol)
+                resp = jsonify(resp.text)
+
+                results[symbol] = resp['result']
+
+                if resp['result']:
+                    self.__listening_quotes.append(symbol)
+
+        return results
+
+    def UpdateQuote(self):
+        resp = self._api.UpdateQuote(token=self._token)
+        resp = jsonify(resp.text)
+
+
+    def CancelQuotes(self, symbols: t.Optional[t.List[str]] = None) -> t.Dict[str, bool]:
+        """
+
+        :param symbols: [Optional] if None Cancel all listening Quotes. else list of symbols  like ['GAZP']
+        or ['GAZP', 'SBER']
+        :return:
+        """
+        if symbols is None:
+            symbols = [*self.__listening_quotes]
+        elif not isinstance(symbols, list):
+            raise TypeError('the symbols must be list instance')
+
+        results = {}
+        for symbol in symbols:
+            resp = self._api.CancelQuotes(token=self._token, symbol=symbol)
+            resp = jsonify(resp.text)
 
             results[symbol] = resp['result']
+            if resp['result']:
+                self.__listening_quotes.remove()
 
         return results
 
@@ -148,7 +183,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             password=self._password,
             token=self._token
         )
-        disconnect_resp = loads(disconnect_resp.text)
+        disconnect_resp = jsonify(disconnect_resp.text)
         if not disconnect_resp['result']:
             raise ApiConnectionError('Ошибка отключения от api, Сообзите о проблеме разработчикам',
                                      data=disconnect_resp)
