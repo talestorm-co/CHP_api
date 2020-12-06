@@ -1,3 +1,5 @@
+import typing as t
+
 # CHP_adapter #############
 class LoginException(AttributeError):
     def __init__(self, string_message: str):
@@ -7,5 +9,6 @@ class LoginException(AttributeError):
 
 # ChpClient ###############
 class ApiConnectionError(RuntimeError):
-    def __init__(self, string_message: str):
+    def __init__(self, string_message: str, data: t.Optional[t.Union[t.List, t.Dict]] = None):
         self.txt = string_message
+        self.resp_data = data
