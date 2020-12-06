@@ -87,17 +87,75 @@ class Api:
 
         return resp
 
-    def GetSymbols(self, token: str, ):  # TODO
-        pass
+    def GetSymbols(self, token: str) -> requests.Response:
+        """
 
-    def GetMyPortfolioData(self, token: str, ) -> requests.Response:  # TODO
-        pass
+        :param token: user auth token
+        :return:
+        """
+        resp = self._req_method(
+            method_url='Instruments/GetSymbols',
+            method_data={
+                "token": token
+            }
+        )
+        return resp
 
-    def GetPortfolioList(self, token):  # TODO
-        pass
+    def GetMyPortfolioData(self, token: str, mode: int, portfolio: str) -> requests.Response:
+        # TODO  Проверить работу (doesn't tested)
+        """
 
-    def GetTrades(self, token, ):  # TODO
-        pass
+        :param token: user auth token
+        :param mode: Application type [1 - Active | 2 - All]
+        :param portfolio: portfolio name on the trading platform. Like "ST125465-MO-01"
+        :return:
+        """
+        resp = self._req_method(
+            method_url='HistoricalData/GetMyPortfolioData',
+            method_data={
+                "token": token,
+                "mode": mode,
+                "portfolio": portfolio
+            }
+        )
+        return resp
+
+    def GetPortfolioList(self, token: str) -> requests.Response:
+        # TODO  Проверить работу (doesn't tested)
+        """
+
+        :param token: user auth token
+        :return:
+        """
+        resp = self._req_method(
+            method_url='AccountInformation/GetPortfolioList',
+            method_data={
+                "token": token
+            }
+        )
+
+        return resp
+
+    def GetTrades(self, token: str, since: str, symbol: str, count: int) -> requests.Response:
+        # TODO Проверить работу (doesn't tested)
+        """
+
+        :param token:
+        :param since:
+        :param symbol:
+        :param count:
+        :return:
+        """
+        resp = self._req_method(
+            method_url='Instruments/GetTrades',
+            method_data={
+                "from": since,
+                "symbol": symbol,
+                "count": count,
+                "token": token
+            }
+        )
+        return resp
 
     def AddTickHistory(self, token):  # TODO
         pass
@@ -313,7 +371,3 @@ class Api:
             }
         )
         return resp
-
-
-if __name__ == '__main__':
-    api = Api(host="fdfdfd", port=5000)
