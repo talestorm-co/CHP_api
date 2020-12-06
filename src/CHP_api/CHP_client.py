@@ -135,9 +135,16 @@ class ChpClient(metaclass=SmartClientSingleton):
         return results
 
     def UpdateQuote(self):
+        """
+        
+        :return:
+        """
         resp = self._api.UpdateQuote(token=self._token)
         resp = jsonify(resp.text)
 
+        self._check_response(resp)
+
+        return resp['data']
 
     def CancelQuotes(self, symbols: t.Optional[t.List[str]] = None) -> t.Dict[str, bool]:
         """
