@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 mypy = "*"
+sphinx = "*"
 
 [packages]
 requests = "2.25.0"
