@@ -42,7 +42,7 @@ class Api:
         )
         return resp
 
-    def Connect(self, login: str, password: str, token: str, mode: int) -> requests.Response:
+    def Connected(self, login: str, password: str, token: str, mode: int) -> requests.Response:
         """
         Sending request to connecting to remote api with your auth data
 
@@ -59,6 +59,45 @@ class Api:
                 'password': password,
                 'token': token
                 # 'mode': mode, # TODO Узнать что там с модом
+            }
+        )
+        return resp
+
+    def Reconnection(self, login: str, password: str, token: str, mode: int) -> requests.Response:
+        """
+        Sending request to connecting to remote api with your auth data
+
+        :param login: user login into ITI Capital
+        :param password: user password into ITI Capital
+        :param token: user auth token
+        :param mode: mode to connect [0 - demo | 1 - real connection]
+        :return:
+        """
+        resp = self._req_method(
+            method_url='Auth/Reconnection',
+            method_data={
+                'login': login,
+                'password': password,
+                'token': token
+                # 'mode': mode, # TODO Узнать что там с модом
+            }
+        )
+        return resp
+
+    def Disconnected(self, login: str, password: str, token: str) -> requests.Response:
+        """
+        Sending request to disconnect user from API, and close thread connection
+        :param login: user login into ITI Capital
+        :param password: user password into ITI Capital
+        :param token: user auth token
+        :return:
+        """
+        resp = self._req_method(
+            method_url='Auth/Disconnected',
+            method_data={
+                'login': login,
+                'password': password,
+                'token': token
             }
         )
         return resp
@@ -157,9 +196,6 @@ class Api:
         )
         return resp
 
-    def AddTickHistory(self, token):  # TODO
-        pass
-
     def ListenQuotes(self, token: str, symbol: str) -> requests.Response:
         """
 
@@ -237,8 +273,21 @@ class Api:
         )
         return resp
 
-    def CancelTicks(self, token: str, symbol: str):  # Todo что отправлять?
-        pass
+    def CancelTicks(self, token: str, symbol: str) -> requests.Response:
+        """
+
+        :param token: user auth token
+        :param symbol: symbol like "GAZP"
+        :return:
+        """
+        resp = self._req_method(
+            method_url='Instruments/CancelTicks',
+            method_data={
+                "token": token,
+                "symbol": symbol
+            }
+        )
+        return resp
 
     def ListenBidAsks(self, token: str, symbol: str) -> requests.Response:
         """
@@ -256,8 +305,19 @@ class Api:
         )
         return resp
 
-    def UpdateBidAsks(self, ):  # Todo нет в доке
-        pass
+    def UpdateBidAsk(self, token: str) -> requests.Response :
+        """
+        :param token: user auth token
+        :return:
+        """
+
+        resp = self._req_method(
+            method_url='Instruments/UpdateBidAsk',
+            method_data={
+                'token': token,
+            }
+        )
+        return resp
 
     def CancelBidAsks(self, token: str, symbol: str) -> requests.Response:
         """
@@ -341,6 +401,9 @@ class Api:
         )
         return resp
 
+    def AddTickHistory(self, token):  # TODO
+        pass
+
     def MoveOrder(self, token, portfolio, symbol, orderid, targetprice):  # TODO
         resp = self._req_method(
             method_url='Order/Move',
@@ -412,20 +475,4 @@ class Api:
         )
         return resp
 
-    def Disconnected(self, login: str, password: str, token: str) -> requests.Response:
-        """
-        Sending request to disconnect user from API, and close thread connection
-        :param login: user login into ITI Capital
-        :param password: user password into ITI Capital
-        :param token: user auth token
-        :return:
-        """
-        resp = self._req_method(
-            method_url='Auth/Disconnected',
-            method_data={
-                'login': login,
-                'password': password,
-                'token': token
-            }
-        )
-        return resp
+
