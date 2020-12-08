@@ -318,14 +318,14 @@ class ChpClient(metaclass=SmartClientSingleton):
         :return:
         """
         resp = self._api.GetMyPortfolioData(token=self._token, mode=mode, portfolio=portfolio)
-        resp = jsonify(resp)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
 
     def GetPortfolioList(self):
         resp = self._api.GetPortfolioList(token=self._token)
-        resp = jsonify(resp)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
