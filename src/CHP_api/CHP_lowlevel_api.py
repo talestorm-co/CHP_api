@@ -2,7 +2,7 @@ import requests
 import typing as t
 
 
-# http://85.143.79.6:5001
+
 
 class Api:
 
