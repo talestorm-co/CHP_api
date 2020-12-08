@@ -254,7 +254,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         """
         if symbols is None or \
                 not symbols:
-            symbols = [*self.__listening_bid_ask]
+            symbols = [*self.__listening_ticks]
         elif isinstance(symbols, str):
             symbols = [symbols]
 
