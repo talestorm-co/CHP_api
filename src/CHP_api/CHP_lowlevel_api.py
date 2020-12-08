@@ -398,7 +398,12 @@ class Api:
         )
         return resp
 
-    def MoveOrder(self, token: str, portfolio:str, symbol: str, orderid: str, targetprice: int) -> requests.Response:
+    def MoveOrder(self,
+                  token: str,
+                  portfolio: str,
+                  symbol: str,
+                  orderid: str,
+                  targetprice: int) -> requests.Response:
         """
 
         :param token:
@@ -498,7 +503,7 @@ class Api:
 
     def CancelPortfolio(self, token: str, portfolio: str) -> requests.Response:
         """
-        
+
         :param token:
         :param portfolio:
         :return:
