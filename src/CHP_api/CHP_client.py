@@ -324,7 +324,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         return resp['data']
 
     def GetPortfolioList(self):
-        resp = self._api.GetMyPortfolioData(token=self._token)
+        resp = self._api.GetPortfolioList(token=self._token)
         resp = jsonify(resp)
         self._check_response(resp)
 
