@@ -43,10 +43,12 @@ class ChpClient(metaclass=SmartClientSingleton):
         self._token: str = token
         self._login: str = login
         self._password: str = password
+        self._mode = mode
 
         self.__listening_quotes: t.List[str] = []
         self.__listening_ticks: t.List[str] = []
         self.__listening_bid_ask: t.List[str] = []
+        self.__listening_portfolios: t.List[str] = []
 
     @property
     def Token(self) -> str:
@@ -61,6 +63,10 @@ class ChpClient(metaclass=SmartClientSingleton):
         return self._password
 
     @property
+    def Mode(self) -> int:
+        return self._mode
+
+    @property
     def listening_quotes(self) -> t.List[str]:
         return [*self.__listening_quotes]
 
@@ -72,10 +78,29 @@ class ChpClient(metaclass=SmartClientSingleton):
     def listening_bid_ask(self) -> t.List[str]:
         return [*self.__listening_bid_ask]
 
+    @property
+    def listening_portfolios(self) -> t.List[str]:
+        return [*self.__listening_portfolios]
+
     @staticmethod
     def _check_response(resp):
         if not resp['result']:
             raise ApiRequestException(resp['reason'], data=resp)
+
+    def _check_portfolio_sub(self, portfolio):
+        if portfolio not in self.__listening_portfolios:
+            listening_res = self.ListenPortfolio(portfolio)
+            if not listening_res[portfolio]:
+                raise ApiRequestException('Ну удалось подписаться на портфель, для выполнения запроса')
+
+    def Reconnect(self):
+        resp = self._api.Reconnection(login=self._login, password=self._password, token=self._token,
+                                      mode=self._mode)
+        resp = jsonify(resp.text)
+        if not resp['result']:
+            raise ApiConnectionError(resp['reason'], data=resp)
+        else:
+            return True
 
     def GetBars(self, since: str, interval: int, symbol: str, count: int):
         """
@@ -134,8 +159,8 @@ class ChpClient(metaclass=SmartClientSingleton):
         :param symbols: list of symbols  like ['GAZP'] or ['GAZP', 'SBER']
         :return:
         """
-        if not isinstance(symbols, list):
-            raise TypeError('the symbols must be list instance')
+        if isinstance(symbols, str):
+            symbols = [symbols]
 
         results = {}
         for symbol in symbols:
@@ -169,11 +194,11 @@ class ChpClient(metaclass=SmartClientSingleton):
         or ['GAZP', 'SBER']
         :return:
         """
-        if symbols is None or\
+        if symbols is None or \
                 not symbols:
-            symbols = [*self.__listening_quotes]
-        elif not isinstance(symbols, list):
-            raise TypeError('the symbols must be list instance')
+            symbols = [*self.__listening_bid_ask]
+        elif isinstance(symbols, str):
+            symbols = [symbols]
 
         results = {}
         for symbol in symbols:
@@ -192,8 +217,8 @@ class ChpClient(metaclass=SmartClientSingleton):
         :param symbols: list of symbols  like ['GAZP'] or ['GAZP', 'SBER']
         :return:
         """
-        if not isinstance(symbols, list):
-            raise TypeError('the symbols must be list instance')
+        if isinstance(symbols, str):
+            symbols = [symbols]
 
         results = {}
         for symbol in symbols:
@@ -227,11 +252,11 @@ class ChpClient(metaclass=SmartClientSingleton):
         or ['GAZP', 'SBER']
         :return:
         """
-        if symbols is None or\
+        if symbols is None or \
                 not symbols:
-            symbols = [*self.__listening_ticks]
-        elif not isinstance(symbols, list):
-            raise TypeError('the symbols must be list instance')
+            symbols = [*self.__listening_bid_ask]
+        elif isinstance(symbols, str):
+            symbols = [symbols]
 
         results = {}
         for symbol in symbols:
@@ -244,10 +269,10 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         return results
 
-    def ListenBidAsks(self, symbols):
+    def ListenBidAsks(self, symbols: t.Union[t.List[str], str]):
 
-        if not isinstance(symbols, list):
-            raise TypeError('the symbols must be list instance')
+        if isinstance(symbols, str):
+            symbols = [symbols]
 
         results = {}
         for symbol in symbols:
@@ -268,14 +293,12 @@ class ChpClient(metaclass=SmartClientSingleton):
         self._check_response(resp)
         return resp['data']
 
-    def CancelBidAsks(self, symbols: t.Optional[t.List[str]] = None):
-
-        if symbols is None or\
+    def CancelBidAsks(self, symbols: t.Optional[t.List[str]] = None):  # todo str support
+        if symbols is None or \
                 not symbols:
             symbols = [*self.__listening_bid_ask]
-
-        elif not isinstance(symbols, list):
-            raise TypeError('the symbols must be list instance')
+        elif isinstance(symbols, str):
+            symbols = [symbols]
 
         results = {}
         for symbol in symbols:
@@ -286,6 +309,172 @@ class ChpClient(metaclass=SmartClientSingleton):
                 self.__listening_bid_ask.remove(symbol)
 
         return results
+
+    def GetMyPortfolioData(self, portfolio: str, mode: int):
+        """
+
+        :param portfolio:
+        :param mode:
+        :return:
+        """
+        resp = self._api.GetMyPortfolioData(token=self._token, mode=mode, portfolio=portfolio)
+        resp = jsonify(resp)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def GetPortfolioList(self):
+        resp = self._api.GetMyPortfolioData(token=self._token)
+        resp = jsonify(resp)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def ListenPortfolio(self, portfolios: t.Union[t.List[str], str]):
+
+        if isinstance(portfolios, str):
+            portfolios = [portfolios]
+
+        results = {}
+        for prt in portfolios:
+            if prt not in self.__listening_portfolios:
+                resp = self._api.ListenPortfolio(token=self._token, portfolio=prt)
+                resp = jsonify(resp.text)
+
+                results[prt] = resp['result']
+                if resp['result']:
+                    self.__listening_portfolios.append(prt)
+
+        return results
+
+    def CancelPortfolio(self, portfolios: t.Optional[t.Union[t.List, str]] = None):
+        if portfolios is None or \
+                not portfolios:
+            portfolios = [*self.__listening_portfolios]
+        elif isinstance(portfolios, str):
+            portfolios = [portfolios]
+
+        results = {}
+
+        for prt in portfolios:
+            resp = self._api.CancelPortfolio(token=self._token, portfolio=prt)
+            resp = jsonify(resp.text)
+            results[prt] = resp['result']
+            if resp['result']:
+                self.__listening_portfolios.remove(prt)
+
+        return results
+
+    def PlaceOrder(self, portfolio, symbol, action, type_, validity, price, amount, stop, cookie):
+        """
+        :param portfolio: portfolio name on the trading platform. Like "ST125465-MO-01"
+        :param symbol: Код ЦБ из таблицы котировок TC Matrix
+        :param action: Вид торговой операции. Принимает следующие значения:
+                    1 - Купить
+                    2 - Продать
+                    3 - Открыть «короткую позицию»
+                    4 – Закрыть «короткую» позицию
+        :param type_: Тип приказа. Принимает следующие значения:
+                    1 - Приказ по рынку
+                    2 - Лимитированный приказ
+                    3 - Стоп приказ
+                    4 – приказ Стоп-Лимит
+        :param validity: Срок действия приказа. Принимает следующие значения:
+                    1 - День
+                    2 – GTC (до отмены, макс. 30 дней)
+        :param price: Цена Лимит - для заявок типа Лимит и Стоп-Лимит
+                    0 - для приказа: По рынку или Стоп
+        :param amount: Объем, ЦБ в приказе
+        :param stop: Цена СТОП для приказа типа Стоп и Стоп-Лимит
+                    0 - для приказа: По рынку или Лимит
+        :param cookie: Ваш уникальный номер приказа, используется для
+                    определения Id приказа через события OrderSucceeded/
+                    OrderFailed и UpdateOrders
+        :return:
+        """
+        self._check_portfolio_sub(portfolio)
+
+        resp = self._api.PlaceOrder(
+            token=self._token,
+            portfolio=portfolio,
+            symbol=symbol,
+            action=action,
+            type_=type_,
+            price=price,
+            amount=amount,
+            validity=validity,
+            stop=stop,
+            cookie=cookie
+        )
+        resp = jsonify(resp.text)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def MoveOrder(self, portfolio: str, symbol: str, orderid: str, targetprice: int):
+        self._check_portfolio_sub(portfolio)
+
+        resp = self._api.MoveOrder(
+            token=self._token,
+            portfolio=portfolio,
+            symbol=symbol,
+            orderid=orderid,
+            targetprice=targetprice
+        )
+        resp = jsonify(resp.text)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def CancelOrder(self, portfolio: str, symbol: str, orderid: str):
+        self._check_portfolio_sub(portfolio)
+
+        resp = self._api.CancelOrder(
+            token=self._token,
+            portfolio=portfolio,
+            symbol=symbol,
+            orderid=orderid
+        )
+        resp = jsonify(resp.text)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def UpdateOrder(self):
+
+        resp = self._api.UpdateOrder(
+            token=self._token
+        )
+        resp = jsonify(resp)
+        self._check_response(resp)
+        return resp['data']
+
+    def UpdatePosition(self):
+        resp = self._api.UpdatePosition(
+            token=self._token
+        )
+        resp = jsonify(resp)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def AddTrade(self):
+        resp = self._api.AddTrade(
+            token=self._token
+        )
+        resp = jsonify(resp)
+        self._check_response(resp)
+
+        return resp['data']
+
+    def SetPortfolio(self):
+        resp = self._api.SetPortfolio(
+            token=self._token
+        )
+        resp = jsonify(resp)
+        self._check_response(resp)
+
+        return resp['data']
 
     def __del__(self):
         disconnect_resp = self._api.Disconnected(
