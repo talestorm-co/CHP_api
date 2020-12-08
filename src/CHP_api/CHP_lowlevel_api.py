@@ -141,7 +141,6 @@ class Api:
         return resp
 
     def GetMyPortfolioData(self, token: str, mode: int, portfolio: str) -> requests.Response:
-        # TODO  Проверить работу (doesn't tested)
         """
 
         :param token: user auth token
@@ -160,7 +159,6 @@ class Api:
         return resp
 
     def GetPortfolioList(self, token: str) -> requests.Response:
-        # TODO  Проверить работу (doesn't tested)
         """
 
         :param token: user auth token
@@ -336,7 +334,6 @@ class Api:
         return resp
 
     def ListenPortfolio(self, token: str, portfolio: str) -> requests.Response:
-        # TODO Проверить
         """
 
         :param token: user auth token
@@ -354,7 +351,7 @@ class Api:
 
     def PlaceOrder(self, token: str, portfolio: str, symbol: str, action: int, type_: int, validity: int,
                    price: float, amount: float, stop: float,
-                   cookie: float):  # TODO
+                   cookie: float) -> requests.Response:
         """
 
         :param token: user auth token
@@ -401,10 +398,16 @@ class Api:
         )
         return resp
 
-    def AddTickHistory(self, token):  # TODO
-        pass
+    def MoveOrder(self, token: str, portfolio:str, symbol: str, orderid: str, targetprice: int) -> requests.Response:
+        """
 
-    def MoveOrder(self, token, portfolio, symbol, orderid, targetprice):  # TODO
+        :param token:
+        :param portfolio:
+        :param symbol:
+        :param orderid:
+        :param targetprice:
+        :return:
+        """
         resp = self._req_method(
             method_url='Order/Move',
             method_data={
@@ -417,7 +420,15 @@ class Api:
         )
         return resp
 
-    def CancelOrder(self, token, portfolio, symbol, orderid):  # TODO
+    def CancelOrder(self, token: str, portfolio: str, symbol: str, orderid: str) -> requests.Response:
+        """
+
+        :param token:
+        :param portfolio:
+        :param symbol:
+        :param orderid:
+        :return:
+        """
         resp = self._req_method(
             method_url='Order/Cancel',
             method_data={
@@ -429,7 +440,12 @@ class Api:
         )
         return resp
 
-    def UpdateOrder(self, token):  # TODO
+    def UpdateOrder(self, token: str) -> requests.Response:
+        """
+
+        :param token:
+        :return:
+        """
         resp = self._req_method(
             method_url='AccountInformation/UpdateOrder',
             method_data={
@@ -438,7 +454,12 @@ class Api:
         )
         return resp
 
-    def UpdatePosition(self, token):  # TODO
+    def UpdatePosition(self, token: str) -> requests.Response:
+        """
+
+        :param token:
+        :return:
+        """
         resp = self._req_method(
             method_url='AccountInformation/UpdatePosition',
             method_data={
@@ -447,7 +468,12 @@ class Api:
         )
         return resp
 
-    def AddTrade(self, token):  # TODO
+    def AddTrade(self, token: str) -> requests.Response:
+        """
+
+        :param token:
+        :return:
+        """
         resp = self._req_method(
             method_url='AccountInformation/AddTrade',
             method_data={
@@ -456,7 +482,12 @@ class Api:
         )
         return resp
 
-    def SetPortfolio(self, token):  # TODO
+    def SetPortfolio(self, token: str) -> requests.Response:
+        """
+
+        :param token:
+        :return:
+        """
         resp = self._req_method(
             method_url='AccountInformation/SetPortfolio',
             method_data={
@@ -465,7 +496,13 @@ class Api:
         )
         return resp
 
-    def CancelPortfolio(self, token, portfolio):  # TODO
+    def CancelPortfolio(self, token: str, portfolio: str) -> requests.Response:
+        """
+        
+        :param token:
+        :param portfolio:
+        :return:
+        """
         resp = self._req_method(
             method_url='AccountInformation/CancelPortfolio',
             method_data={
