@@ -38,7 +38,10 @@ class ChpClient(metaclass=SmartClientSingleton):
         connect_resp = self._api.Connected(login=login, password=password, token=token, mode=mode)
         connect_resp = jsonify(connect_resp.text)
         if not connect_resp['result']:
-            raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
+            try:
+                self.Reconnect()
+            except:
+                raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
 
         self._token: str = token
         self._login: str = login
@@ -454,7 +457,6 @@ class ChpClient(metaclass=SmartClientSingleton):
         return resp['data']
 
     def UpdateOrder(self):
-
         resp = self._api.UpdateOrder(
             token=self._token
         )
