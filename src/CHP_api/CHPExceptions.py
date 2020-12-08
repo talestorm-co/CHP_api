@@ -10,14 +10,20 @@ class LoginException(AttributeError):
 ##############################################################################################################
 
 
+
 # ChpClient ##################################################################################################
-class ApiConnectionError(RuntimeError):
+
+class ChpError(RuntimeError):
+    pass
+
+
+class ApiConnectionError(ChpError):
     def __init__(self, msg: str, data: t.Optional[t.Union[t.List, t.Dict]] = None):
         self.txt = msg
         self.resp_data = data
 
 
-class ApiRequestException(RuntimeError):
+class ApiRequestException(ChpError):
     def __init__(self, msg: str, data: t.Optional[t.Union[t.List, t.Dict]] = None):
         self.txt = msg
         self.resp_data = data

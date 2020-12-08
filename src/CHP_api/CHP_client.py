@@ -110,7 +110,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         )
         disconnect_resp = jsonify(disconnect_resp.text)
         if not disconnect_resp['result']:
-            raise ApiConnectionError('Ошибка отключения от api, Сообзите о проблеме разработчикам',
+            raise ApiConnectionError('Ошибка отключения от api, Сообщите о проблеме разработчикам',
                                      data=disconnect_resp)
 
         print(f"Client with token {self._token} deleted")
