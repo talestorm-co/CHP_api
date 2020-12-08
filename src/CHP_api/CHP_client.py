@@ -38,18 +38,12 @@ class ChpClient(metaclass=SmartClientSingleton):
         self._password: str = password
         self._mode = mode
 
-
         self._api = Api(host=host, port=port, ssh=False)
 
         connect_resp = self._api.Connected(login=login, password=password, token=token, mode=mode)
         connect_resp = jsonify(connect_resp.text)
         if not connect_resp['result']:
-            try:
-                self.Reconnect()
-            except:
-                raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
-
-
+            raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
 
         self.__listening_quotes: t.List[str] = []
         self.__listening_ticks: t.List[str] = []
@@ -108,7 +102,11 @@ class ChpClient(metaclass=SmartClientSingleton):
         else:
             return True
 
-    def Disconnect(self):
+    def Disconnect(self): # Todo Cancels before disconnect
+        self.CancelPortfolio()
+        self.CancelBidAsks()
+        self.CancelTicks()
+        self.CancelQuotes()
         disconnect_resp = self._api.Disconnected(
             login=self._login,
             password=self._password,
