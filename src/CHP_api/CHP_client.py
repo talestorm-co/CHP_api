@@ -33,6 +33,12 @@ class ChpClient(metaclass=SmartClientSingleton):
         :param mode: connect mode [0 - demo | 1 - production] || Warn: token is key-only argument
         """
 
+        self._token: str = token
+        self._login: str = login
+        self._password: str = password
+        self._mode = mode
+
+        
         self._api = Api(host=host, port=port, ssh=False)
 
         connect_resp = self._api.Connected(login=login, password=password, token=token, mode=mode)
@@ -43,10 +49,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             except:
                 raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
 
-        self._token: str = token
-        self._login: str = login
-        self._password: str = password
-        self._mode = mode
+
 
         self.__listening_quotes: t.List[str] = []
         self.__listening_ticks: t.List[str] = []
