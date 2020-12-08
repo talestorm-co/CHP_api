@@ -38,7 +38,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         self._password: str = password
         self._mode = mode
 
-        
+
         self._api = Api(host=host, port=port, ssh=False)
 
         connect_resp = self._api.Connected(login=login, password=password, token=token, mode=mode)
