@@ -445,7 +445,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         resp = self._api.UpdateOrder(
             token=self._token
         )
-        resp = jsonify(resp)
+        resp = jsonify(resp.text)
         self._check_response(resp)
         return resp['data']
 
@@ -453,7 +453,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         resp = self._api.UpdatePosition(
             token=self._token
         )
-        resp = jsonify(resp)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
@@ -462,7 +462,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         resp = self._api.AddTrade(
             token=self._token
         )
-        resp = jsonify(resp)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
@@ -471,7 +471,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         resp = self._api.SetPortfolio(
             token=self._token
         )
-        resp = jsonify(resp)
+        resp = jsonify(resp.text)
         self._check_response(resp)
 
         return resp['data']
