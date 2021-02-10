@@ -18,13 +18,13 @@ class ChpError(RuntimeError):
 
 
 class ApiConnectionError(ChpError):
-    def __init__(self, msg: str, data: t.Optional[t.Union[t.List, t.Dict]] = None):
+    def __init__(self, msg: str, data: t.Optional[t.Union[t.List, t.Dict, str]] = None):
         self.txt = msg
         self.resp_data = data
 
 
 class ApiRequestException(ChpError):
-    def __init__(self, msg: str, data: t.Optional[t.Union[t.List, t.Dict]] = None):
+    def __init__(self, msg: str, data: t.Optional[t.Union[t.List, t.Dict, str]] = None):
         self.txt = msg
         self.resp_data = data
 

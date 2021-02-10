@@ -1,5 +1,7 @@
 import typing as t
-from json import loads as jsonify
+from json import loads, JSONDecodeError
+from pprint import pprint
+
 
 from CHP_api.CHP_lowlevel_api import Api
 from CHP_api.utils.Meta import SmartClientSingleton
@@ -7,6 +9,14 @@ from CHP_api.CHPExceptions import (
     ApiConnectionError,
     ApiRequestException
 )
+
+
+def jsonify(data: str) -> t.Dict:
+    try:
+        res = loads(data)
+    except JSONDecodeError as e:
+        raise ApiRequestException('Пришел не json', data=data)
+    return res
 
 
 class ChpClient(metaclass=SmartClientSingleton):
@@ -42,13 +52,16 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         connect_resp = self._api.Connected(login=login, password=password, token=token, mode=mode)
         connect_resp = jsonify(connect_resp.text)
+
+        pprint(connect_resp)
+
         if not connect_resp['result']:
             raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
 
-        self.__listening_quotes: t.List[str] = []
-        self.__listening_ticks: t.List[str] = []
-        self.__listening_bid_ask: t.List[str] = []
-        self.__listening_portfolios: t.List[str] = []
+        self._listening_quotes: t.List[str] = []
+        self._listening_ticks: t.List[str] = []
+        self._listening_bid_ask: t.List[str] = []
+        self._listening_portfolios: t.List[str] = []
 
     @property
     def Token(self) -> str:
@@ -68,51 +81,97 @@ class ChpClient(metaclass=SmartClientSingleton):
 
     @property
     def listening_quotes(self) -> t.List[str]:
-        return [*self.__listening_quotes]
+        return self._listening_quotes.copy()
+
+    @listening_quotes.setter
+    def listening_quotes(self, value: t.List[str]) -> None:
+        if not isinstance(value, list):
+            raise ValueError(f"{value} must be List[str] instance")
+        self._listening_quotes = value
+
+    @listening_quotes.deleter
+    def listening_quotes(self) -> None:
+        self._listening_quotes = []
+
 
     @property
     def listening_ticks(self) -> t.List[str]:
-        return [*self.__listening_ticks]
+        return self._listening_ticks.copy()
+
+    @listening_ticks.setter
+    def listening_ticks(self, value: t.List[str]) -> None:
+        if not isinstance(value, list):
+            raise ValueError(f"{value} must be List[str] instance")
+        self._listening_ticks = value
+
+    @listening_ticks.deleter
+    def listening_ticks(self) -> None:
+        self._listening_ticks = []
+
 
     @property
     def listening_bid_ask(self) -> t.List[str]:
-        return [*self.__listening_bid_ask]
+        return self._listening_bid_ask.copy()
+
+    @listening_bid_ask.setter
+    def listening_bid_ask(self, value: t.List[str]) -> None:
+        if not isinstance(value, list):
+            raise ValueError(f"{value} must be List[str] instance")
+        self._listening_bid_ask = value
+
+    @listening_bid_ask.deleter
+    def listening_bid_ask(self) -> None:
+        self._listening_bid_ask = []
+
 
     @property
     def listening_portfolios(self) -> t.List[str]:
-        return [*self.__listening_portfolios]
+        return self._listening_portfolios.copy()
+
+    @listening_portfolios.setter
+    def listening_portfolios(self, value: t.List[str]) -> None:
+        if not isinstance(value, list):
+            raise ValueError(f"{value} must be List[str] instance")
+        self._listening_portfolios = value
+
+    @listening_portfolios.deleter
+    def listening_portfolios(self) -> None:
+        self._listening_portfolios = []
+
 
     @staticmethod
     def _check_response(resp):
-        if not resp['result']:
-            raise ApiRequestException(resp['reason'], data=resp)
 
-    def _check_portfolio_sub(self, portfolio):
-        if portfolio not in self.__listening_portfolios:
-            listening_res = self.ListenPortfolio(portfolio)
-            if not listening_res[portfolio]:
-                raise ApiRequestException('Ну удалось подписаться на портфель, для выполнения запроса')
+        for key in ('data', 'result'):
+            if key not in resp:
+                raise ApiRequestException(f'У ответа сервера нет поля {key}', data=resp)
+
+        try:
+            if not resp['result']:
+                raise ApiRequestException(resp['reason'], data=resp)
+        except KeyError:
+            raise ApiRequestException('У ответа сервера нет поля result')
 
     def Reconnect(self):
         resp = self._api.Reconnection(login=self._login, password=self._password, token=self._token,
                                       mode=self._mode)
+
         resp = jsonify(resp.text)
+
         if not resp['result']:
             raise ApiConnectionError(resp['reason'], data=resp)
         else:
             return True
 
-    def Disconnect(self): # Todo Cancels before disconnect
-        self.CancelPortfolio()
-        self.CancelBidAsks()
-        self.CancelTicks()
-        self.CancelQuotes()
+    def Disconnect(self):
         disconnect_resp = self._api.Disconnected(
             login=self._login,
             password=self._password,
             token=self._token
         )
+
         disconnect_resp = jsonify(disconnect_resp.text)
+
         if not disconnect_resp['result']:
             raise ApiConnectionError('Ошибка отключения от api, Сообщите о проблеме разработчикам',
                                      data=disconnect_resp)
@@ -128,17 +187,17 @@ class ChpClient(metaclass=SmartClientSingleton):
         :param count:
         :return:
         """
-        resp = self._api.GetBars(
+        resp = self._api.GetBars( # Отправляем запрос с параметрами на сервер
             token=self._token,
             since=since,
             interval=interval,
             symbol=symbol,
             count=count
         )
-        resp = jsonify(resp.text)
-        self._check_response(resp)
+        resp = jsonify(resp.text)  # достаём из http Ответа json
+        self._check_response(resp)  # проверяем json
 
-        return resp['data']
+        return resp['data']  #  возвращаем
 
     def GetSymbols(self):  # TODO
         """
@@ -170,7 +229,7 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         return resp['data']
 
-    def ListenQuotes(self, symbols: t.List[str]) -> t.Dict[str, bool]:
+    def ListenQuotes(self, symbols: t.Union[t.List[str], str]) -> t.Dict[str, bool]:
         """
         Listening on the quotes by symbols
         :param symbols: list of symbols  like ['GAZP'] or ['GAZP', 'SBER']
@@ -181,14 +240,19 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         results = {}
         for symbol in symbols:
-            if symbol not in self.__listening_quotes:
-                resp = self._api.ListenQuotes(token=self._token, symbol=symbol)
-                resp = jsonify(resp.text)
+            resp = self._api.ListenQuotes(token=self._token, symbol=symbol)
+            resp = jsonify(resp.text)
 
+            try:
                 results[symbol] = resp['result']
-
                 if resp['result']:
-                    self.__listening_quotes.append(symbol)
+                    self._listening_quotes.append(symbol)
+
+            except KeyError:
+                results[symbol] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
 
         return results
 
@@ -204,16 +268,18 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         return resp['data']
 
-    def CancelQuotes(self, symbols: t.Optional[t.List[str]] = None) -> t.Dict[str, bool]:
+
+    def CancelQuotes(self, symbols: t.Optional[t.List[str], str] = None):
         """
         Unsubscribe from the specified quotes (if nothing is passed, unsubscribe from all quotes)
         :param symbols: [Optional] if None Cancel all listening Quotes. else list of symbols  like ['GAZP']
         or ['GAZP', 'SBER']
         :return:
         """
+
         if symbols is None or \
                 not symbols:
-            symbols = [*self.__listening_quotes]
+            symbols = self._listening_quotes.copy()
         elif isinstance(symbols, str):
             symbols = [symbols]
 
@@ -222,9 +288,16 @@ class ChpClient(metaclass=SmartClientSingleton):
             resp = self._api.CancelQuotes(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            results[symbol] = resp['result']
-            if resp['result']:
-                self.__listening_quotes.remove(symbol)
+            try:
+                results[symbol] = resp['result']
+                if resp['result']:
+                    self._listening_quotes.remove(symbol)
+
+            except KeyError:
+                results[symbol] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
 
         return results
 
@@ -239,14 +312,20 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         results = {}
         for symbol in symbols:
-            if symbol not in self.__listening_ticks:
-                resp = self._api.ListenTicks(token=self._token, symbol=symbol)
-                resp = jsonify(resp.text)
 
+            resp = self._api.ListenTicks(token=self._token, symbol=symbol)
+            resp = jsonify(resp.text)
+
+            try:
                 results[symbol] = resp['result']
 
                 if resp['result']:
-                    self.__listening_ticks.append(symbol)
+                    self._listening_ticks.append(symbol)
+            except KeyError:
+                results[symbol] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
 
         return results
 
@@ -271,7 +350,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         """
         if symbols is None or \
                 not symbols:
-            symbols = [*self.__listening_ticks]
+            symbols = self._listening_ticks.copy()
         elif isinstance(symbols, str):
             symbols = [symbols]
 
@@ -280,9 +359,16 @@ class ChpClient(metaclass=SmartClientSingleton):
             resp = self._api.CancelTicks(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            results[symbol] = resp['result']
+            try:
+                results[symbol] = resp['result']
+            except KeyError:
+                results[symbol] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
+
             if resp['result']:
-                self.__listening_ticks.remove(symbol)
+                self._listening_ticks.remove(symbol)
 
         return results
 
@@ -293,14 +379,20 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         results = {}
         for symbol in symbols:
-            if symbol not in self.__listening_bid_ask:
-                resp = self._api.ListenBidAsks(token=self._token, symbol=symbol)
-                resp = jsonify(resp.text)
 
+            resp = self._api.ListenBidAsks(token=self._token, symbol=symbol)
+            resp = jsonify(resp.text)
+
+            try:
                 results[symbol] = resp['result']
+            except KeyError:
+                results[symbol] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
 
-                if resp['result']:
-                    self.__listening_bid_ask.append(symbol)
+            if resp['result']:
+                self._listening_bid_ask.append(symbol)
 
         return results
 
@@ -313,7 +405,7 @@ class ChpClient(metaclass=SmartClientSingleton):
     def CancelBidAsks(self, symbols: t.Optional[t.List[str]] = None):  # todo str support
         if symbols is None or \
                 not symbols:
-            symbols = [*self.__listening_bid_ask]
+            symbols = self._listening_bid_ask.copy()
         elif isinstance(symbols, str):
             symbols = [symbols]
 
@@ -321,9 +413,16 @@ class ChpClient(metaclass=SmartClientSingleton):
         for symbol in symbols:
             resp = self._api.CancelBidAsks(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
-            results[symbol] = resp['result']
+            try:
+                results[symbol] = resp['result']
+            except KeyError:
+                results[symbol] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
+
             if resp['result']:
-                self.__listening_bid_ask.remove(symbol)
+                self._listening_bid_ask.remove(symbol)
 
         return results
 
@@ -354,20 +453,27 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         results = {}
         for prt in portfolios:
-            if prt not in self.__listening_portfolios:
-                resp = self._api.ListenPortfolio(token=self._token, portfolio=prt)
-                resp = jsonify(resp.text)
 
+            resp = self._api.ListenPortfolio(token=self._token, portfolio=prt)
+            resp = jsonify(resp.text)
+
+            try:
                 results[prt] = resp['result']
-                if resp['result']:
-                    self.__listening_portfolios.append(prt)
+            except KeyError:
+                results[prt] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
+
+            if resp['result']:
+                self._listening_portfolios.append(prt)
 
         return results
 
     def CancelPortfolio(self, portfolios: t.Optional[t.Union[t.List, str]] = None):
         if portfolios is None or \
                 not portfolios:
-            portfolios = [*self.__listening_portfolios]
+            portfolios = self._listening_portfolios.copy()
         elif isinstance(portfolios, str):
             portfolios = [portfolios]
 
@@ -376,11 +482,19 @@ class ChpClient(metaclass=SmartClientSingleton):
         for prt in portfolios:
             resp = self._api.CancelPortfolio(token=self._token, portfolio=prt)
             resp = jsonify(resp.text)
-            results[prt] = resp['result']
+            try:
+                results[prt] = resp['result']
+            except KeyError:
+                results[prt] = {
+                    'status': 'сервер не вернул поле result',
+                    'resp': resp
+                }
+
             if resp['result']:
-                self.__listening_portfolios.remove(prt)
+                self._listening_portfolios.remove(prt)
 
         return results
+
 
     def PlaceOrder(self, portfolio, symbol, action, type_, validity, price, amount, stop, cookie):
         """
@@ -409,7 +523,6 @@ class ChpClient(metaclass=SmartClientSingleton):
                     OrderFailed и UpdateOrders
         :return:
         """
-        self._check_portfolio_sub(portfolio)
 
         resp = self._api.PlaceOrder(
             token=self._token,
@@ -429,7 +542,6 @@ class ChpClient(metaclass=SmartClientSingleton):
         return resp['data']
 
     def MoveOrder(self, portfolio: str, symbol: str, orderid: str, targetprice: int):
-        self._check_portfolio_sub(portfolio)
 
         resp = self._api.MoveOrder(
             token=self._token,
@@ -444,7 +556,6 @@ class ChpClient(metaclass=SmartClientSingleton):
         return resp['data']
 
     def CancelOrder(self, portfolio: str, symbol: str, orderid: str):
-        self._check_portfolio_sub(portfolio)
 
         resp = self._api.CancelOrder(
             token=self._token,

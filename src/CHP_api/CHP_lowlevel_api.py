@@ -18,7 +18,7 @@ class Api:
             if port:
                 self._host_url += f":{port}"
 
-    def _req_method(self, method_url: str, method_data: t.Optional[t.Dict] = None) -> requests.Response:
+    def _req_method(self, method_urn: str, method_data: t.Optional[t.Dict] = None) -> requests.Response:
         """
         Sending post request to <full_host_address>/<method_url> with json context: <method_data>
         For example:
@@ -31,12 +31,12 @@ class Api:
             is sending post to http://127.0.0.1:5001/Trade
             with json {"token":"12345"}
 
-        :param method_url:
+        :param method_urn:
         :param method_data:
         :return:
         """
         resp = requests.post(
-            f'{self._host_url}/{method_url}',
+            f'{self._host_url}/{method_urn}',
             json=method_data,
             headers={'Content-Type': 'application/json'}
         )
@@ -53,7 +53,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Auth/Connected',
+            method_urn='Auth/Connected',
             method_data={
                 'login': login,
                 'password': password,
@@ -74,7 +74,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Auth/Reconnection',
+            method_urn='Auth/Reconnection',
             method_data={
                 'login': login,
                 'password': password,
@@ -93,7 +93,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Auth/Disconnected',
+            method_urn='Auth/Disconnected',
             method_data={
                 'login': login,
                 'password': password,
@@ -114,7 +114,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/GetBars',
+            method_urn='Instruments/GetBars',
             method_data={
                 "token": token,
                 "since": since,
@@ -133,7 +133,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/GetSymbols',
+            method_urn='Instruments/GetSymbols',
             method_data={
                 "token": token
             }
@@ -149,7 +149,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='HistoricalData/GetMyPortfolioData',
+            method_urn='HistoricalData/GetMyPortfolioData',
             method_data={
                 "token": token,
                 "mode": mode,
@@ -165,7 +165,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/GetPortfolioList',
+            method_urn='AccountInformation/GetPortfolioList',
             method_data={
                 "token": token
             }
@@ -184,7 +184,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/GetTrades',
+            method_urn='Instruments/GetTrades',
             method_data={
                 "from": since,
                 "symbol": symbol,
@@ -202,7 +202,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/ListenQuotes',
+            method_urn='Instruments/ListenQuotes',
             method_data={
                 'token': token,
                 'symbol': symbol,
@@ -217,7 +217,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/UpdateQuote',
+            method_urn='Instruments/UpdateQuote',
             method_data={
                 'token': token,
             }
@@ -232,7 +232,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/CancelQuotes',
+            method_urn='Instruments/CancelQuotes',
             method_data={
                 "token": token,
                 "symbol": symbol
@@ -248,7 +248,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/ListenTicks',
+            method_urn='Instruments/ListenTicks',
             method_data={
                 "token": token,
                 "symbol": symbol
@@ -264,7 +264,7 @@ class Api:
         """
 
         resp = self._req_method(
-            method_url='Instruments/AddTick',
+            method_urn='Instruments/AddTick',
             method_data={
                 'token': token,
             }
@@ -279,7 +279,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/CancelTicks',
+            method_urn='Instruments/CancelTicks',
             method_data={
                 "token": token,
                 "symbol": symbol
@@ -295,7 +295,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/ListenBidAsks',
+            method_urn='Instruments/ListenBidAsks',
             method_data={
                 "token": token,
                 "symbol": symbol,
@@ -310,7 +310,7 @@ class Api:
         """
 
         resp = self._req_method(
-            method_url='Instruments/UpdateBidAsk',
+            method_urn='Instruments/UpdateBidAsk',
             method_data={
                 'token': token,
             }
@@ -325,7 +325,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Instruments/CancelBidAsks',
+            method_urn='Instruments/CancelBidAsks',
             method_data={
                 "token": token,
                 "symbol": symbol
@@ -341,7 +341,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/ListenPortfolio',
+            method_urn='AccountInformation/ListenPortfolio',
             method_data={
                 "token": token,
                 "portfolio": portfolio
@@ -381,7 +381,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Order/Place',
+            method_urn='Order/Place',
             method_data={
                 "token": token,
                 "portfolio": portfolio,
@@ -414,7 +414,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Order/Move',
+            method_urn='Order/Move',
             method_data={
                 'token': token,
                 'portfolio': portfolio,
@@ -435,7 +435,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='Order/Cancel',
+            method_urn='Order/Cancel',
             method_data={
                 'token': token,
                 'portfolio': portfolio,
@@ -452,7 +452,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/UpdateOrder',
+            method_urn='AccountInformation/UpdateOrder',
             method_data={
                 'token': token,
             }
@@ -466,7 +466,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/UpdatePosition',
+            method_urn='AccountInformation/UpdatePosition',
             method_data={
                 'token': token,
             }
@@ -480,7 +480,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/AddTrade',
+            method_urn='AccountInformation/AddTrade',
             method_data={
                 'token': token,
             }
@@ -494,7 +494,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/SetPortfolio',
+            method_urn='AccountInformation/SetPortfolio',
             method_data={
                 'token': token,
             }
@@ -509,7 +509,7 @@ class Api:
         :return:
         """
         resp = self._req_method(
-            method_url='AccountInformation/CancelPortfolio',
+            method_urn='AccountInformation/CancelPortfolio',
             method_data={
                 'token': token,
                 'portfolio': portfolio
