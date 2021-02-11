@@ -247,8 +247,11 @@ class ChpClient(
 
             results[symbol] = resp
 
-            if resp['result']:
-                self._listening_quotes.append(symbol)
+            try:
+                if resp['result']:
+                    self._listening_quotes.append(symbol)
+            except KeyError:
+                pass  # server response hove no key result
 
         return results
 
@@ -286,7 +289,8 @@ class ChpClient(
             resp = jsonify(resp.text)
 
             results[symbol] = resp
-            if resp['result']:
+
+            if resp['result'] and symbol in self._listening_quotes:
                 self._listening_quotes.remove(symbol)
 
         return results
@@ -306,16 +310,13 @@ class ChpClient(
             resp = self._api.ListenTicks(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            try:
-                results[symbol] = resp['result']
+            results[symbol] = resp
 
+            try:
                 if resp['result']:
                     self._listening_ticks.append(symbol)
             except KeyError:
-                results[symbol] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
+                pass  # server response hove no key result
 
         return results
 
@@ -331,7 +332,7 @@ class ChpClient(
 
         return resp['data']
 
-    def CancelTicks(self, symbols: t.Optional[t.List[str]] = None) -> t.Dict[str, bool]:
+    def CancelTicks(self, symbols: t.Optional[t.List[str]] = None) -> t.Dict[str, t.Dict]:
         """
         Unsubscribe from the specified ticks (if nothing is passed, unsubscribe from all quotes)
         :param symbols: [Optional] if None Cancel all listening ticks. else list of symbols  like ['GAZP']
@@ -349,15 +350,9 @@ class ChpClient(
             resp = self._api.CancelTicks(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            try:
-                results[symbol] = resp['result']
-            except KeyError:
-                results[symbol] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
+            results[symbol] = resp
 
-            if resp['result']:
+            if resp['result'] and symbol in self._listening_ticks:
                 self._listening_ticks.remove(symbol)
 
         return results
@@ -373,16 +368,14 @@ class ChpClient(
             resp = self._api.ListenBidAsks(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            try:
-                results[symbol] = resp['result']
-            except KeyError:
-                results[symbol] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
 
-            if resp['result']:
-                self._listening_bid_ask.append(symbol)
+            results[symbol] = resp
+
+            try:
+                if resp['result'] :
+                    self._listening_bid_ask.append(symbol)
+            except KeyError:
+                pass  # server response hove no key result
 
         return results
 
@@ -392,7 +385,7 @@ class ChpClient(
         self._check_response(resp)
         return resp['data']
 
-    def CancelBidAsks(self, symbols: t.Optional[t.List[str]] = None):  # todo str support
+    def CancelBidAsks(self, symbols: t.Optional[t.Union[t.List[str], str]] = None) -> t.Dict[str, t.Dict]:  # todo str support
         if symbols is None or \
                 not symbols:
             symbols = self._listening_bid_ask.copy()
@@ -403,15 +396,10 @@ class ChpClient(
         for symbol in symbols:
             resp = self._api.CancelBidAsks(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
-            try:
-                results[symbol] = resp['result']
-            except KeyError:
-                results[symbol] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
 
-            if resp['result']:
+            results[symbol] = resp
+
+            if resp['result'] and symbol in self._listening_bid_ask:
                 self._listening_bid_ask.remove(symbol)
 
         return results
@@ -447,16 +435,13 @@ class ChpClient(
             resp = self._api.ListenPortfolio(token=self._token, portfolio=prt)
             resp = jsonify(resp.text)
 
-            try:
-                results[prt] = resp['result']
-            except KeyError:
-                results[prt] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
+            results[prt] = resp
 
-            if resp['result']:
-                self._listening_portfolios.append(prt)
+            try:
+                if resp['result']:
+                    self._listening_portfolios.append(prt)
+            except KeyError:
+                pass  # server response hove no key result
 
         return results
 
@@ -472,15 +457,10 @@ class ChpClient(
         for prt in portfolios:
             resp = self._api.CancelPortfolio(token=self._token, portfolio=prt)
             resp = jsonify(resp.text)
-            try:
-                results[prt] = resp['result']
-            except KeyError:
-                results[prt] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
 
-            if resp['result']:
+            results[prt] = resp
+
+            if resp['result'] and prt in self._listening_portfolios:
                 self._listening_portfolios.remove(prt)
 
         return results
