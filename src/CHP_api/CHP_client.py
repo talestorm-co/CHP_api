@@ -573,15 +573,15 @@ class ChpClient(
 
         return resp['data']
 
-    def __del__(self):
-        disconnect_resp = self._api.Disconnected(
-            login=self._login,
-            password=self._password,
-            token=self._token
-        )
-        disconnect_resp = jsonify(disconnect_resp.text)
-        if not disconnect_resp['result']:
-            raise ApiConnectionError('Ошибка отключения от api, Сообзите о проблеме разработчикам',
-                                     data=disconnect_resp)
-
-        print(f"Client with token {self._token} deleted")
+    # def __del__(self):
+    #     disconnect_resp = self._api.Disconnected(
+    #         login=self._login,
+    #         password=self._password,
+    #         token=self._token
+    #     )
+    #     disconnect_resp = jsonify(disconnect_resp.text)
+    #     if not disconnect_resp['result']:
+    #         raise ApiConnectionError('Ошибка отключения от api, Сообзите о проблеме разработчикам',
+    #                                  data=disconnect_resp)
+    #
+    #     print(f"Client with token {self._token} deleted")
