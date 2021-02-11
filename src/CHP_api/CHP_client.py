@@ -229,7 +229,7 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         return resp['data']
 
-    def ListenQuotes(self, symbols: t.Union[t.List[str], str]) -> t.Dict[str, bool]:
+    def ListenQuotes(self, symbols: t.Union[t.List[str], str]) -> t.Dict[str, t.Dict]:
         """
         Listening on the quotes by symbols
         :param symbols: list of symbols  like ['GAZP'] or ['GAZP', 'SBER']
@@ -243,16 +243,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             resp = self._api.ListenQuotes(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            try:
-                results[symbol] = resp['result']
-                if resp['result']:
-                    self._listening_quotes.append(symbol)
-
-            except KeyError:
-                results[symbol] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
+            results[symbol] = resp
 
         return results
 
@@ -288,16 +279,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             resp = self._api.CancelQuotes(token=self._token, symbol=symbol)
             resp = jsonify(resp.text)
 
-            try:
-                results[symbol] = resp['result']
-                if resp['result']:
-                    self._listening_quotes.remove(symbol)
-
-            except KeyError:
-                results[symbol] = {
-                    'status': 'сервер не вернул поле result',
-                    'resp': resp
-                }
+            results[symbol] = resp
 
         return results
 
