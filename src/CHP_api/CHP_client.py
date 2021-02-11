@@ -19,7 +19,9 @@ def jsonify(data: str) -> t.Dict:
     return res
 
 
-class ChpClient(metaclass=SmartClientSingleton):
+class ChpClient(
+    # metaclass=SmartClientSingleton
+):
 
     def __init__(
             self,
@@ -176,7 +178,7 @@ class ChpClient(metaclass=SmartClientSingleton):
             raise ApiConnectionError('Ошибка отключения от api, Сообщите о проблеме разработчикам',
                                      data=disconnect_resp)
 
-        print(f"Client with token {self._token} deleted")
+        print(f"Client with token {self._token} disconnected")
 
     def GetBars(self, since: str, interval: int, symbol: str, count: int):
         """
