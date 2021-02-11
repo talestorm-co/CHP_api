@@ -9,7 +9,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(name='CHP_api',
-      version='1.9.9',
+      version='1.9.10',
       description='Simple python adaptor for CHP_REST',
       long_description=long_description,
       long_description_content_type='text/markdown',

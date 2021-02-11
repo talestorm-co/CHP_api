@@ -269,7 +269,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         return resp['data']
 
 
-    def CancelQuotes(self, symbols: t.Optional[t.List[str], str] = None):
+    def CancelQuotes(self, symbols: t.Optional[t.Union[t.List[str], str]] = None):
         """
         Unsubscribe from the specified quotes (if nothing is passed, unsubscribe from all quotes)
         :param symbols: [Optional] if None Cancel all listening Quotes. else list of symbols  like ['GAZP']
@@ -470,7 +470,7 @@ class ChpClient(metaclass=SmartClientSingleton):
 
         return results
 
-    def CancelPortfolio(self, portfolios: t.Optional[t.Union[t.List, str]] = None):
+    def CancelPortfolio(self, portfolios: t.Optional[t.Union[t.List[str], str]] = None):
         if portfolios is None or \
                 not portfolios:
             portfolios = self._listening_portfolios.copy()
