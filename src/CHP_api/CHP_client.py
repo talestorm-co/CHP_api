@@ -245,6 +245,9 @@ class ChpClient(metaclass=SmartClientSingleton):
 
             results[symbol] = resp
 
+            if resp['result']:
+                self._listening_quotes.append(symbol)
+
         return results
 
     def UpdateQuote(self):
@@ -256,6 +259,7 @@ class ChpClient(metaclass=SmartClientSingleton):
         resp = jsonify(resp.text)
 
         self._check_response(resp)
+
 
         return resp['data']
 
@@ -280,6 +284,8 @@ class ChpClient(metaclass=SmartClientSingleton):
             resp = jsonify(resp.text)
 
             results[symbol] = resp
+            if resp['result']:
+                self._listening_quotes.remove(symbol)
 
         return results
 
