@@ -52,14 +52,6 @@ class ChpClient(
 
         self._api = Api(host=host, port=port, ssh=False)
 
-        connect_resp = self._api.Connected(login=login, password=password, token=token, mode=mode)
-        connect_resp = jsonify(connect_resp.text)
-
-        pprint(connect_resp)
-
-        if not connect_resp['result']:
-            raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
-
         self._listening_quotes: t.List[str] = []
         self._listening_ticks: t.List[str] = []
         self._listening_bid_ask: t.List[str] = []
@@ -153,6 +145,16 @@ class ChpClient(
                 raise ApiRequestException(resp['reason'], data=resp)
         except KeyError:
             raise ApiRequestException('У ответа сервера нет поля result')
+
+    def Connect(self):
+
+        connect_resp = self._api.Connected(login=self._login, password=self._password, token=self._token, mode=self._mode)
+        connect_resp = jsonify(connect_resp.text)
+
+        if not connect_resp['result']:
+            raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
+
+        return connect_resp
 
     def Reconnect(self):
         resp = self._api.Reconnection(login=self._login, password=self._password, token=self._token,
