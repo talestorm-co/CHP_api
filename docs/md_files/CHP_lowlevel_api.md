@@ -2,7 +2,7 @@
 
 # Lowlevel api for ITI invest
 
-Документация с описанием и назначением методов [ITI invest](https://iticapital.ru/assets/files/software/SmartCOM_manual_4_0_upd.pdf)
+Документация с описанием и назначением методов [ITI invest](https://iticapital.ru/assets/files/software/SmartCOM_manual_4_0_upd.pdf) использыемых здесь
 
 Оглавление:
  - [Конструктор](#Конструктор)
