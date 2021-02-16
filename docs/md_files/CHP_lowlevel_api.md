@@ -2,7 +2,7 @@
 
 # Lowlevel api for ITI invest
 
-Документация с описанием и назначением методов [ITI invest](https://iticapital.ru/assets/files/software/SmartCOM_manual_4_0_upd.pdf) использыемых здесь
+Документация с описанием и назначением методов [ITI invest](https://iticapital.ru/assets/files/software/SmartCOM_manual_4_0_upd.pdf) используемых здесь
 
 Оглавление:
  - [Конструктор](#Конструктор)
@@ -568,10 +568,10 @@ URN запроса: Order/Place
     - 2 – GTC (до отмены, макс. 30 дней)
  - price: float – Цена Лимит - для заявок типа Лимит и Стоп-Лимит
     - 0 - для приказа: По рынку или Стоп
- - amount: float – Объем, ЦБ в приказе
- - stop: float – Цена СТОП для приказа типа Стоп и Стоп-Лимит
+ - amount: int – Объем, ЦБ в приказе
+ - stop: float – Цена СТОП для приказа типа Стоп или Стоп-Лимит
     - 0 - для приказа: По рынку или Лимит
- - cookie: float – Ваш уникальный номер приказа, используется для определения Id приказа через события OrderSucceeded/OrderFailed и UpdateOrders
+ - cookie: int – Ваш уникальный номер приказа, используется для определения Id приказа через события OrderSucceeded/OrderFailed и UpdateOrders
 
 #### Возвращает 
 
@@ -813,9 +813,9 @@ api.CancelPortfolio(token='user_token', portfolio="ST123456-MO-01")
    >>> resp = api.Connected(login='login', password='password', token='token')
    
    >>> resp.text
-   '{a: 1, b: 2}' # TODO: дописать
+   '{"method": "Connected","result": true,"data": [{"token": "token","work": 0,"exchange": 1,"login": "login", "password": "password"}]}'
    ```
- - json(): возвращает ответ сервера в виде dict оъекта, но в случае если там не json выкидывает исключение </br>
+ - json(): возвращает ответ сервера в виде dict объекта, но в случае если там не json выкидывает исключение </br>
  Например:
    ```python
    >>> from CHP_api.CHP_lowlevel_api import Api
@@ -825,5 +825,17 @@ api.CancelPortfolio(token='user_token', portfolio="ST123456-MO-01")
    >>> resp = api.Connected(login='login', password='password', token='token')
    
    >>> resp.json()
-   {a: 1, b: 2} # TODO: дописать
+   {
+      "method": "Connected",
+      "result": true,
+      "data": [
+         {
+               "token": "token",
+               "work": 0,
+               "exchange": 1,
+               "login": "login",
+               "password": "password"
+         }
+      ]
+}
    ```
