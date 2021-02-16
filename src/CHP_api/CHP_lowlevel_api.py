@@ -42,7 +42,7 @@ class Api:
         )
         return resp
 
-    def Connected(self, login: str, password: str, token: str, mode: int) -> requests.Response:
+    def Connected(self, login: str, password: str, token: str, mode: int = 0) -> requests.Response:
         """
         Sending request to connecting to remote api with your auth data
 
@@ -63,7 +63,7 @@ class Api:
         )
         return resp
 
-    def Reconnection(self, login: str, password: str, token: str, mode: int) -> requests.Response:
+    def Reconnection(self, login: str, password: str, token: str, mode: int = 0) -> requests.Response:
         """
         Sending request to connecting to remote api with your auth data
 
