@@ -63,8 +63,11 @@ api = Api(host='server_host', port='server_port')
 <https://github.com/talestorm-com/CHP_Rest#connected>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Auth/Connected
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - login: str - Логин на ITI Capital
@@ -88,8 +91,11 @@ api.Connected(login='user_login', password='user_password', token='user_token')
 ### Reconnection
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Auth/Reconnection
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - login: str - Логин на ITI Capital
@@ -113,8 +119,11 @@ api.Reconnection(login='user_login', password='user_password', token='user_token
 <https://github.com/talestorm-com/CHP_Rest#disconnected>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Auth/Disconnected
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - login: str - Логин на ITI Capital
@@ -137,8 +146,11 @@ api.Disconnected(login='user_login', password='user_password', token='user_token
 <https://github.com/talestorm-com/CHP_Rest#getbars>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/GetBars
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -163,8 +175,11 @@ api.GetBars(token='user_token', since="2020-10-10T10:10:10.000", interval=6, sym
 <https://github.com/talestorm-com/CHP_Rest#getsymbols>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/GetSymbols
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -187,8 +202,11 @@ api.GetSymbols(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#getmyportfoliodata>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: HistoricalData/GetMyPortfolioData
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -211,8 +229,11 @@ api.GetMyPortfolioData(token='user_token', mode=2, portfolio="ST123456-MO-01")
 <https://github.com/talestorm-com/CHP_Rest#getportfoliolist>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/GetPortfolioList
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -233,8 +254,11 @@ api.GetPortfolioList(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#gettrades>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/GetTrades
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -259,8 +283,11 @@ api.GetTrades(token='user_token', since="2020-10-10T10:10:10.000", symbol="GAZP"
 <https://github.com/talestorm-com/CHP_Rest#listencancel>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/ListenQuotes
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -282,8 +309,11 @@ api.ListenQuotes(token='user_token', symbol="GAZP")
 <https://github.com/talestorm-com/CHP_Rest#updatequote>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/UpdateQuote
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -304,8 +334,11 @@ api.UpdateQuote(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#listencancel>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/CancelQuotes
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -327,8 +360,11 @@ api.CancelQuotes(token='user_token', symbol="GAZP")
 <https://github.com/talestorm-com/CHP_Rest#listencancel>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/ListenTicks
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -350,8 +386,11 @@ api.ListenTicks(token='user_token', symbol="GAZP")
 <https://github.com/talestorm-com/CHP_Rest#addtick>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/AddTick
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -372,8 +411,11 @@ api.AddTick(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#listencancel>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/CancelTicks
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -395,8 +437,11 @@ api.CancelTicks(token='user_token', symbol="GAZP")
 <https://github.com/talestorm-com/CHP_Rest#listencancel>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/ListenBidAsks
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -418,8 +463,11 @@ api.ListenBidAsks(token='user_token', symbol="GAZP")
 <https://github.com/talestorm-com/CHP_Rest#updatebidask>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/UpdateBidAsk
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -440,8 +488,11 @@ api.UpdateBidAsk(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#listencancel>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Instruments/CancelBidAsks
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -464,8 +515,11 @@ api.CancelBidAsks(token='user_token', symbol="GAZP")
 <https://github.com/talestorm-com/CHP_Rest#listencancelportfolio>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/ListenPortfolio
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -487,8 +541,11 @@ api.ListenPortfolio(token='user_token', portfolio="ST123456-MO-01")
 <https://github.com/talestorm-com/CHP_Rest#placeorder>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Order/Place
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -541,8 +598,11 @@ api.PlaceOrder(token="user_token",
 <https://github.com/talestorm-com/CHP_Rest#moveorder>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Order/Move
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -568,8 +628,11 @@ api.MoveOrder(token='user_token', portfolio="ST123456-MO-01", symbol="SBER", ord
 <https://github.com/talestorm-com/CHP_Rest#cancelorder>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: Order/Cancel
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -595,8 +658,11 @@ api.CancelOrder(token='user_token', portfolio="ST123456-MO-01", symbol="SBER", o
 <https://github.com/talestorm-com/CHP_Rest#updateorder>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/UpdateOrder
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -617,8 +683,11 @@ api.UpdateOrder(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#updateposition>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/UpdatePosition
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -639,8 +708,11 @@ api.UpdatePosition(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#addtrade>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/AddTrade
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -661,8 +733,11 @@ api.AddTrade(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#setportfolio>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/SetPortfolio
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
@@ -683,8 +758,11 @@ api.SetPortfolio(token='user_token')
 <https://github.com/talestorm-com/CHP_Rest#listencancelportfolio>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
+
 URN запроса: AccountInformation/CancelPortfolio
+
 Все переданные параметры формируются в json
+
 
 #### Параметры:
  - token: str - Токен доступа сервера
