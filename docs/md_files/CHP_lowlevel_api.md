@@ -24,13 +24,13 @@
  - [ListenPortfolio](#ListenPortfolio)
  - [PlaceOrder](#PlaceOrder)
  - [MoveOrder](#MoveOrder)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
+ - [CancelOrder](#CancelOrder)
+ - [UpdateOrder](#UpdateOrder)
+ - [UpdatePosition](#UpdatePosition)
+ - [AddTrade](#AddTrade)
+ - [SetPortfolio](#SetPortfolio)
+ - [CancelPortfolio](#CancelPortfolio)
+ - [Response из пакета requests](#Response из пакета requests)
  - [](#)
  - [](#)
  - [](#)
@@ -59,6 +59,9 @@ api = Api(host='server_host', port='server_port')
 
 ```
 
+---
+
+
 ## Методы
 
 ### Connected
@@ -77,11 +80,16 @@ URN запроса: Auth/Connected
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.Connected(login='user_login', password='user_password', token='user_token')
 ```
+
+---
+
+
+
 
 ### Reconnection
 
@@ -97,11 +105,14 @@ URN запроса: Auth/Reconnection
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.Reconnection(login='user_login', password='user_password', token='user_token')
 ```
+
+---
+
 
 ### Disconnected
 
@@ -118,11 +129,14 @@ URN запроса: Auth/Disconnected
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.Disconnected(login='user_login', password='user_password', token='user_token')
 ```
+
+---
+
 
 ### GetBars
 
@@ -141,11 +155,14 @@ URN запроса: Instruments/GetBars
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.GetBars(token='user_token', since="2020-10-10T10:10:10.000", interval=6, symbol="GAZP", count=10)
 ```
+
+---
+
 
 ### GetSymbols
 
@@ -160,11 +177,14 @@ URN запроса: Instruments/GetSymbols
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.GetSymbols(token='user_token')
 ```
+
+---
+
 
 
 
@@ -183,14 +203,14 @@ URN запроса: HistoricalData/GetMyPortfolioData
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.GetMyPortfolioData(token='user_token', mode=2, portfolio="ST123456-MO-01")
 ```
 
+---
 
-№№№
 
 ### GetPortfolioList
 
@@ -205,11 +225,14 @@ URN запроса: AccountInformation/GetPortfolioList
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.GetPortfolioList(token='user_token')
 ```
+
+---
+
 
 ### GetTrades
 
@@ -227,11 +250,14 @@ URN запроса: Instruments/GetTrades
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.GetTrades(token='user_token', since="2020-10-10T10:10:10.000", symbol="GAZP", count=10)
 ```
+
+---
+
 
 
 ### ListenQuotes
@@ -248,11 +274,14 @@ URN запроса: Instruments/ListenQuotes
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.ListenQuotes(token='user_token', symbol="GAZP")
 ```
+
+---
+
 
 ### UpdateQuote
 
@@ -267,11 +296,14 @@ URN запроса: Instruments/UpdateQuote
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.UpdateQuote(token='user_token')
 ```
+
+---
+
 
 ### CancelQuotes
 
@@ -287,11 +319,14 @@ URN запроса: Instruments/CancelQuotes
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.CancelQuotes(token='user_token', symbol="GAZP")
 ```
+
+---
+
 
 ### ListenTicks
 
@@ -307,11 +342,14 @@ URN запроса: Instruments/ListenTicks
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.ListenTicks(token='user_token', symbol="GAZP")
 ```
+
+---
+
 
 ### AddTick
 
@@ -326,11 +364,14 @@ URN запроса: Instruments/AddTick
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.AddTick(token='user_token')
 ```
+
+---
+
 
 ### CancelTicks
 
@@ -346,11 +387,14 @@ URN запроса: Instruments/CancelTicks
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.CancelTicks(token='user_token', symbol="GAZP")
 ```
+
+---
+
 
 ### ListenBidAsks
 
@@ -366,11 +410,14 @@ URN запроса: Instruments/ListenBidAsks
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.ListenBidAsks(token='user_token', symbol="GAZP")
 ```
+
+---
+
 
 ### UpdateBidAsk
 
@@ -385,11 +432,14 @@ URN запроса: Instruments/UpdateBidAsk
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.UpdateBidAsk(token='user_token')
 ```
+
+---
+
 
 ### CancelBidAsks
 
@@ -405,11 +455,14 @@ URN запроса: Instruments/CancelBidAsks
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.CancelBidAsks(token='user_token', symbol="GAZP")
 ```
+
+---
+
 
 
 ### ListenPortfolio
@@ -426,11 +479,14 @@ URN запроса: AccountInformation/ListenPortfolio
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.ListenPortfolio(token='user_token', portfolio="ST123456-MO-01")
 ```
+
+---
+
 
 ### PlaceOrder
 
@@ -466,7 +522,7 @@ URN запроса: Order/Place
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
 api.PlaceOrder(token="user_token",
@@ -482,10 +538,13 @@ api.PlaceOrder(token="user_token",
         )
 ```
 
+---
+
+
 
 ### MoveOrder
 
-<https://github.com/talestorm-com/CHP_Rest#listencancelportfolio>
+<https://github.com/talestorm-com/CHP_Rest#moveorder>
 
 Выполняет post запрос на CHP_Rest с вложением json из параметров
 URN запроса: Order/Move
@@ -493,18 +552,204 @@ URN запроса: Order/Move
 
 #### Параметры:
  - token: str - Токен доступа сервера
- - portfolio: str - имя портфеля на "трейдинг" платформе
- - symbol: str - 
- - irderid: str - 
- - targetprice: str
+ - portfolio: str - Имя портфеля на "трейдинг" платформе
+ - symbol: str - Короткое имя котировки
+ - orderid: str - Номер приказа на сервере котировок.
+ - targetprice: float - Новая цена приказа. Тип данных float
 
 #### Возвращает 
 
-Объект Response из пакета requests 
+Объект [Response](#Response) из пакета requests 
 
 ```python
-api.MoveOrder(token='user_token', portfolio="ST123456-MO-01")
+api.MoveOrder(token='user_token', portfolio="ST123456-MO-01", symbol="SBER", orderid='order_id', targetprice=10.5) 
+
 ```
 
+---
 
 
+### CancelOrder
+
+<https://github.com/talestorm-com/CHP_Rest#cancelorder>
+
+Выполняет post запрос на CHP_Rest с вложением json из параметров
+URN запроса: Order/Cancel
+Все переданные параметры формируются в json
+
+#### Параметры:
+ - token: str - Токен доступа сервера
+ - portfolio: str - Имя портфеля на "трейдинг" платформе
+ - symbol: str - Короткое имя котировки
+ - orderid: str - Номер приказа на сервере котировок.
+ 
+
+#### Возвращает 
+
+Объект [Response](#Response) из пакета requests 
+
+```python
+api.CancelOrder(token='user_token', portfolio="ST123456-MO-01", symbol="SBER", orderid='order_id') 
+
+```
+
+---
+
+
+### UpdateOrder
+
+<https://github.com/talestorm-com/CHP_Rest#updateorder>
+
+Выполняет post запрос на CHP_Rest с вложением json из параметров
+URN запроса: AccountInformation/UpdateOrder
+Все переданные параметры формируются в json
+
+#### Параметры:
+ - token: str - Токен доступа сервера
+
+#### Возвращает 
+
+Объект [Response](#Response) из пакета requests 
+
+```python
+api.UpdateOrder(token='user_token') 
+
+```
+
+---
+
+### UpdatePosition
+
+<https://github.com/talestorm-com/CHP_Rest#updateposition>
+
+Выполняет post запрос на CHP_Rest с вложением json из параметров
+URN запроса: AccountInformation/UpdatePosition
+Все переданные параметры формируются в json
+
+#### Параметры:
+ - token: str - Токен доступа сервера
+
+#### Возвращает 
+
+Объект [Response](#Response) из пакета requests 
+
+```python
+api.UpdatePosition(token='user_token') 
+
+```
+
+---
+
+### AddTrade
+
+<https://github.com/talestorm-com/CHP_Rest#addtrade>
+
+Выполняет post запрос на CHP_Rest с вложением json из параметров
+URN запроса: AccountInformation/AddTrade
+Все переданные параметры формируются в json
+
+#### Параметры:
+ - token: str - Токен доступа сервера
+
+#### Возвращает 
+
+Объект [Response](#Response) из пакета requests 
+
+```python
+api.AddTrade(token='user_token') 
+
+```
+
+---
+
+### SetPortfolio
+
+<https://github.com/talestorm-com/CHP_Rest#setportfolio>
+
+Выполняет post запрос на CHP_Rest с вложением json из параметров
+URN запроса: AccountInformation/SetPortfolio
+Все переданные параметры формируются в json
+
+#### Параметры:
+ - token: str - Токен доступа сервера
+
+#### Возвращает 
+
+Объект [Response](#Response) из пакета requests 
+
+```python
+api.SetPortfolio(token='user_token') 
+
+```
+
+---
+
+### CancelPortfolio
+
+<https://github.com/talestorm-com/CHP_Rest#listencancelportfolio>
+
+Выполняет post запрос на CHP_Rest с вложением json из параметров
+URN запроса: AccountInformation/CancelPortfolio
+Все переданные параметры формируются в json
+
+#### Параметры:
+ - token: str - Токен доступа сервера
+ - portfolio: str - имя портфеля на "трейдинг" платформе
+
+#### Возвращает 
+
+Объект [Response](#Response) из пакета requests 
+
+```python
+api.CancelPortfolio(token='user_token', portfolio="ST123456-MO-01") 
+
+```
+
+---
+
+
+### Response
+
+Все методы возвращают ответ в виде объекта requests.Response
+
+[официальная документация requests.Response](https://requests.readthedocs.io/en/master/)
+
+[Неофициальное описание методов](https://www.w3schools.com/python/ref_requests_response.asp)
+
+Наиболее интересные методы обьекта Response:
+ - status_code: возвращает [http статус ответа от сервера](https://www.wikiwand.com/ru/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%BA%D0%BE%D0%B4%D0%BE%D0%B2_%D1%81%D0%BE%D1%81%D1%82%D0%BE%D1%8F%D0%BD%D0%B8%D1%8F_HTTP) </br>
+ Например:
+   ```python
+   >>> from CHP_api.CHP_lowlevel_api import Api
+   
+   >>> api = Api('host', 'port')
+   
+   >>> resp = api.Connected(login='login', password='password', token='token')
+   
+   >>> resp.status_code
+   200
+   ```
+ - text: возвращает ответ сервера в виде unicode строки </br>
+ Например:
+   ```python
+   >>> from CHP_api.CHP_lowlevel_api import Api
+   
+   >>> api = Api('host', 'port')
+   
+   >>> resp = api.Connected(login='login', password='password', token='token')
+   
+   >>> resp.text
+   '{a: 1, b: 2}' # TODO: дописать
+   ```
+ - json(): возвращает ответ сервера в виде dict оъекта, но в случае если там не json выкидывает исключение </br>
+ Например:
+   ```python
+   >>> from CHP_api.CHP_lowlevel_api import Api
+   
+   >>> api = Api('host', 'port')
+   
+   >>> resp = api.Connected(login='login', password='password', token='token')
+   
+   >>> resp.json()
+   {a: 1, b: 2} # TODO: дописать
+   ```

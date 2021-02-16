@@ -513,7 +513,7 @@ class ChpClient(
 
         return resp['data']
 
-    def MoveOrder(self, portfolio: str, symbol: str, orderid: str, targetprice: int):
+    def MoveOrder(self, portfolio: str, symbol: str, orderid: str, targetprice: float):
 
         resp = self._api.MoveOrder(
             token=self._token,

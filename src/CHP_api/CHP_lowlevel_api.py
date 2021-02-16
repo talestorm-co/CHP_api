@@ -403,7 +403,7 @@ class Api:
                   portfolio: str,
                   symbol: str,
                   orderid: str,
-                  targetprice: int) -> requests.Response:
+                  targetprice: float) -> requests.Response:
         """
 
         :param token:
