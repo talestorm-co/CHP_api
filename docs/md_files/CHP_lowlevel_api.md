@@ -30,13 +30,7 @@
  - [AddTrade](#AddTrade)
  - [SetPortfolio](#SetPortfolio)
  - [CancelPortfolio](#CancelPortfolio)
- - [Response из пакета requests](#Response из пакета requests)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
- - [](#)
+ - [Response из пакета requests](#Response)
 
 ---
 
