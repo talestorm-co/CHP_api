@@ -161,10 +161,10 @@ ChpClient выкидывает 3 вида исключений, все они у
 |[Login](#Login)                                |str      |`readonly` свойство с информацией о логине (по какому логину отправляются запросы)                             |
 |[Password](#Password)                          |str      |`readonly` свойство с информацией о пароле (по какому паролю отправляются запросы)                             |
 |[Mode](#Mode)                                  |int      |`readonly` свойство с информацией о типе подключения [0 - demo \| 1 - production] ⚠️ Warn: не используется      |
-|[listening_quotes](#listening_quotes)          |list[str]| свойство с информацией на какие "quotes" подписан клиент. ⚠️ Warn: может быть рассинхранихация с сервером     |
-|[listening_ticks](#listening_ticks)            |list[str]| свойство с информацией на какие "ticks" подписан клиент. ⚠️ Warn: может быть рассинхранихация с сервером      |
-|[listening_bid_ask](#listening_bid_ask)        |list[str]| свойство с информацией на какие "bid/ask" подписан клиент. ⚠️ Warn: может быть рассинхранихация с сервером    
-|[listening_portfolios](#listening_portfolios)  |list[str]| свойство с информацией на какие "портфели" подписан клиент. ⚠️ Warn: может быть рассинхранихация с сервером   |
+|[listening_quotes](#listening_quotes)          |list[str]| свойство с информацией на какие "quotes" подписан клиент. ⚠️ Warn: может быть рассинхронизация с сервером     |
+|[listening_ticks](#listening_ticks)            |list[str]| свойство с информацией на какие "ticks" подписан клиент. ⚠️ Warn: может быть рассинхронизация с сервером      |
+|[listening_bid_ask](#listening_bid_ask)        |list[str]| свойство с информацией на какие "bid/ask" подписан клиент. ⚠️ Warn: может быть рассинхронизация с сервером    
+|[listening_portfolios](#listening_portfolios)  |list[str]| свойство с информацией на какие "портфели" подписан клиент. ⚠️ Warn: может быть рассинхронизация с сервером   |
 
 ----
 
