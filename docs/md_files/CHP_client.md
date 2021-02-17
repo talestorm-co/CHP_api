@@ -598,7 +598,27 @@ ChpClient выкидывает 3 вида исключений, все они у
 ```python
    >>> chp.ListenQuotes('SBER') # Ok
    {'SBER': {"""Полный ответ сервера на подписку от SBER"""...}}
-   >>>
+   >>> """
+   ... Например:
+   ...     Ошибка
+   ...      {'SBER': {'additional': 'Ошибка ListenQuotes',
+   ...    'dataParam': [{'symbol': 'SBER', 'token': '16'}],
+   ...    'errorData': [{'additional': 'Подписка оформлена.',
+   ...                   'message': 'Подписка на SBER уже оформлена.',
+   ...                   'method': 'ListenQuotes',
+   ...                   'reason': 'Error #20'}],
+   ...    'method': 'ListenQuotes',
+   ...    'reason': 'Error #12',
+   ...    'result': False}}
+   ... """
+   >>> """
+   ... Например:
+   ...     Ошибка
+   ...      {'GAZP': {'data': [{'description': 'Подписка на GAZP успешно оформлена'}],
+   ...    'method': 'ListenQuotes',
+   ...    'result': True}}
+   ... """
+   
    >>> chp.ListenQuotes(['SBER', 'GAZP']) # Ok
    {'SBER': {"""Полный ответ сервера на подписку от SBER"""...}, 'GAZP': {"""Полный ответ сервера на подписку от GAZP"""...} }
    >>>
