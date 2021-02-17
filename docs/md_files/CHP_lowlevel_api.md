@@ -4,7 +4,39 @@
 
 Документация с описанием и назначением методов [ITI invest](https://iticapital.ru/assets/files/software/SmartCOM_manual_4_0_upd.pdf) используемых здесь
 
-Оглавление:
+### Info:
+Данный класс просто обьёртка над POST запросами на сервр. 
+
+В качестве параметров конструктора принимает домен или хост и порт сервера.
+
+Все методы принимают некоторые параметры, формируют из них json и кладутся в тело POST запроса
+
+### User Guide:
+Для работы необходимо установить пакет с github:
+
+> `pip install git+https://github.com/talestorm-com/CHP_api.git`
+
+После чего импортируем Api:
+
+```python
+   >>> from CHP_api.CHP_lowlevel_api import Api
+   >>>
+   >>> chp = Api('server_host', 'server_port')
+   >>>
+   >>> response = chp.Connected(login='user_login', password='user_password', token='user_token')
+   >>> response
+   <Response [200]>
+   >>> response.text
+   '{"method": "Connected","result": true,"data": [{"token": "token","work": 0,"exchange": 1,"login": "login", "password": "password"}]}'
+```
+> ## ⚠️ Note:<span style="color:red"> Обязательно после окончания работы закройте соеденение!!!</span>.
+```python
+   >>> chp.Disconnected(login='user_login', password='user_password', token='user_token')
+   <Response [200]> 
+   ### Удастоверьтесь, что соеденение было действительно закрыто
+```
+
+### Методы Api:
  - [Конструктор](#Конструктор)
  - [Connected](#Connected)
  - [Reconnection](#Reconnection)
@@ -37,6 +69,8 @@
 ---
 
 # class Api
+
+##
 
 ### Конструктор
 
