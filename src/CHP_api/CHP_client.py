@@ -7,7 +7,8 @@ from CHP_api.CHP_lowlevel_api import Api
 from CHP_api.utils.Meta import SmartClientSingleton
 from CHP_api.CHPExceptions import (
     ApiConnectionError,
-    ApiRequestException
+    ApiRequestException,
+    ApiResponseNotJson
 )
 
 
@@ -15,7 +16,7 @@ def jsonify(data: str) -> t.Dict:
     try:
         res = loads(data)
     except JSONDecodeError as e:
-        raise ApiRequestException('Пришел не json', data=data)
+        raise ApiResponseNotJson('Пришел не json', data=data)
     return res
 
 
@@ -144,15 +145,18 @@ class ChpClient(
             if not resp['result']:
                 raise ApiRequestException(resp['reason'], data=resp)
         except KeyError:
-            raise ApiRequestException('У ответа сервера нет поля result')
+            raise ApiRequestException('У ответа сервера нет поля result', data=resp)
 
     def Connect(self):
 
         connect_resp = self._api.Connected(login=self._login, password=self._password, token=self._token, mode=self._mode)
         connect_resp = jsonify(connect_resp.text)
 
-        if not connect_resp['result']:
-            raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
+        try:
+            if not connect_resp['result']:
+                raise ApiConnectionError(connect_resp['reason'], data=connect_resp)
+        except KeyError:
+            raise ApiRequestException('У ответа сервера нет поля result', data=connect_resp)
 
         return connect_resp
 
@@ -162,10 +166,14 @@ class ChpClient(
 
         resp = jsonify(resp.text)
 
-        if not resp['result']:
-            raise ApiConnectionError(resp['reason'], data=resp)
-        else:
-            return True
+        try:
+            if not resp['result']:
+                raise ApiConnectionError(resp['reason'], data=resp)
+        except KeyError:
+            raise ApiRequestException('У ответа сервера нет поля result', data=resp)
+
+        return resp
+
 
     def Disconnect(self):
         disconnect_resp = self._api.Disconnected(
@@ -176,11 +184,17 @@ class ChpClient(
 
         disconnect_resp = jsonify(disconnect_resp.text)
 
-        if not disconnect_resp['result']:
-            raise ApiConnectionError('Ошибка отключения от api, Сообщите о проблеме разработчикам',
-                                     data=disconnect_resp)
+        try:
+            if not disconnect_resp['result']:
+                raise ApiConnectionError('Ошибка отключения от api, Сообщите о проблеме разработчикам',
+                                        data=disconnect_resp)
+        except KeyError:
+            raise ApiRequestException('У ответа сервера нет поля result', data=disconnect_resp)
+    
 
         print(f"Client with token {self._token} disconnected")
+        
+        return disconnect_resp
 
     def GetBars(self, since: str, interval: int, symbol: str, count: int):
         """
@@ -291,9 +305,12 @@ class ChpClient(
             resp = jsonify(resp.text)
 
             results[symbol] = resp
+            try:
+                if resp['result'] and symbol in self._listening_quotes:
+                    self._listening_quotes.remove(symbol)
+            except KeyError:
+                pass  # server response hove no key result
 
-            if resp['result'] and symbol in self._listening_quotes:
-                self._listening_quotes.remove(symbol)
 
         return results
 
@@ -353,9 +370,11 @@ class ChpClient(
             resp = jsonify(resp.text)
 
             results[symbol] = resp
-
-            if resp['result'] and symbol in self._listening_ticks:
-                self._listening_ticks.remove(symbol)
+            try:
+                if resp['result'] and symbol in self._listening_ticks:
+                    self._listening_ticks.remove(symbol)
+            except KeyError:
+                pass  # server response hove no key result
 
         return results
 
@@ -400,9 +419,11 @@ class ChpClient(
             resp = jsonify(resp.text)
 
             results[symbol] = resp
-
-            if resp['result'] and symbol in self._listening_bid_ask:
-                self._listening_bid_ask.remove(symbol)
+            try:
+                if resp['result'] and symbol in self._listening_bid_ask:
+                    self._listening_bid_ask.remove(symbol)
+            except KeyError:
+                pass  # server response hove no key result
 
         return results
 
@@ -462,8 +483,11 @@ class ChpClient(
 
             results[prt] = resp
 
-            if resp['result'] and prt in self._listening_portfolios:
-                self._listening_portfolios.remove(prt)
+            try:
+                if resp['result'] and prt in self._listening_portfolios:
+                    self._listening_portfolios.remove(prt)
+            except KeyError:
+                pass  # server response hove no key result
 
         return results
 
