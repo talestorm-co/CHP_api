@@ -59,7 +59,7 @@
 
 ChpClient выкидывает 3 вида исключений, все они унаследованны от ChpError:
 
-Сервер вкрнул не json:
+Сервер выкинул не json:
 ```python
    >>> from CHP_api.CHPExceptions import ChpError
    >>> from CHP_api.CHP_client import ChpClient
