@@ -613,7 +613,7 @@ ChpClient выкидывает 3 вида исключений, все они у
    ... """
    >>> """
    ... Например:
-   ...     Ошибка
+   ...     Ok
    ...      {'GAZP': {'data': [{'description': 'Подписка на GAZP успешно оформлена'}],
    ...    'method': 'ListenQuotes',
    ...    'result': True}}
@@ -690,7 +690,7 @@ ChpClient выкидывает 3 вида исключений, все они у
  
 ### CancelTicks
 
-Аналогично [UpdateQuote](#CancelQuotes)
+Аналогично [CancelQuotes](#CancelQuotes)
 
 ----
  
@@ -709,7 +709,7 @@ ChpClient выкидывает 3 вида исключений, все они у
  
 ### CancelBidAsks
 
-Аналогично [UpdateQuote](#CancelQuotes)
+Аналогично [CancelQuotes](#CancelQuotes)
 
 ----
 
@@ -747,7 +747,7 @@ ChpClient выкидывает 3 вида исключений, все они у
 
 ### CancelPortfolio
 
-Аналогично [ListenQuotes](#ListenQuotes)
+Аналогично [CancelQuotes](#CancelQuotes)
 
 ----
 
