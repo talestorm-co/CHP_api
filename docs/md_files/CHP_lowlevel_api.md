@@ -5,7 +5,7 @@
 Документация с описанием и назначением методов [ITI invest](https://iticapital.ru/assets/files/software/SmartCOM_manual_4_0_upd.pdf) используемых здесь
 
 ### Info:
-Данный класс просто обьёртка над POST запросами на сервр. 
+Данный класс является обёрткой над POST запросами на сервер. 
 
 В качестве параметров конструктора принимает домен или хост и порт сервера.
 
@@ -33,7 +33,7 @@
 ```python
    >>> chp.Disconnected(login='user_login', password='user_password', token='user_token')
    <Response [200]> 
-   ### Удастоверьтесь, что соеденение было действительно закрыто
+   ### Проверьте, что соеденение было действительно закрыто
 ```
 
 ### Методы Api:
@@ -80,7 +80,7 @@
 #### Параметры:
  - host: str - Хост сервера
  - port: [str | int] - Порт сервера
- - ssh: bool (default=False) - подключаться ли по https
+ - ssh: bool (default=False) - подключиться ли по https
 
 ```python
 from CHP_api.CHP_lowlevel_api import Api
