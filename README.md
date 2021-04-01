@@ -8,7 +8,7 @@ Python module for interacting with ITI Capital.
 
 # Документация к модулям:
 
- - ## [CHP_adapter](https://github.com/talestorm-com/CHP_api/blob/master/docs/md_files/CHP_adapter.md)  *(legacy)* - Старый модулья для работы с ITI Capital, сохранён для обратной совместимости со старым api
+ - ## [CHP_adapter](https://github.com/talestorm-com/CHP_api/blob/master/docs/md_files/CHP_adapter.md)  *(legacy)* - Старый модуль для работы с ITI Capital, сохранён для обратной совместимости со старым api
 
  - ## [CHP_lowlevel_api](https://github.com/talestorm-com/CHP_api/blob/master/docs/md_files/CHP_lowlevel_api.md) - Низкоуровневое api (обёртка над POST запросами на сервер). Не делает никаких проверок и отлова исключений. Возвращает http ответ.
 
